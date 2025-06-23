@@ -1,0 +1,29 @@
+/*code {*/
+/*  padding: 2px 4px;*/
+/*  font-size: 90%;*/
+/*  color: #cccccc;*/
+/*  background-color: #272c34;*/
+/*  border-radius: 4px;*/
+/*}*/
+/**/
+/*pre {*/
+/*  padding: 16px;*/
+/*  overflow: auto;*/
+/*  font-size: 85%;*/
+/*  line-height: 1.45;*/
+/*  background-color: #272c34;*/
+/*  border-radius: 3px;*/
+/*}*/
+
+.wmde-markdown pre > code {
+  white-space: pre-wrap !important;
+}
+.wmde-markdown table {
+  max-width: 650px !important;
+}
+/* 
+@media screen and (max-width: 600px) {
+  .wmde-markdown table {
+    display: none !important;
+  }
+} */
