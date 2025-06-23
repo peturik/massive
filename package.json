@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate" 
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -16,7 +16,7 @@
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "@mui/material": "^6.4.12",
     "@node-rs/argon2": "^2.0.2",
-    "@prisma/client": "^6.9.0",
+    "@prisma/client": "^6.10.1",
     "@uiw/react-md-editor": "^4.0.7",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -25,7 +25,6 @@
     "motion": "^11.18.2",
     "next": "15.4.0-canary.84",
     "next-themes": "^0.4.6",
-    "prisma": "^6.9.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-modal": "^3.16.3",
@@ -42,9 +41,11 @@
     "@types/react-dom": "^19.1.6",
     "@types/react-modal": "^3.16.3",
     "@types/slug": "^5.0.9",
+    "@types/webpack": "^5.28.5",
     "eslint": "^9.29.0",
     "eslint-config-next": "15.1.2",
     "postcss": "^8.5.6",
+    "prisma": "^6.10.1",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3"
   }
