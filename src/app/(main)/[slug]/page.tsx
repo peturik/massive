@@ -12,7 +12,7 @@ export default async function Page(props: {
   const query = searchParams?.query || "";
   console.log(query);
 
-  if (query.length > 0) {
+  if (query.length > 3) {
     return redirect("/");
   }
 
@@ -22,9 +22,9 @@ export default async function Page(props: {
   return (
     <div>
       <div className="min-h-screen pb-8 font-[family-name:var(--font-geist-sans)] ">
-        <div className="border-b-2 border-gray-600"></div>
+        <div className="md:border-b-2 border-gray-600"></div>
 
-        <div className="flex gap-8 py-10">
+        <div className="flex gap-8 pt-2 md:pt-10 pb-10">
           <div className="sm:basis-3/12 sm:block hidden"></div>
           <div className="sm:basis-9/12">
             <Suspense fallback={<h2>Loading...</h2>}>

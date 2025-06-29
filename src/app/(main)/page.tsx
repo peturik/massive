@@ -25,9 +25,9 @@ export default async function MainPage(props: {
   return (
     <main>
       <div className="min-h-screen pb-8 font-[family-name:var(--font-geist-sans)] ">
-        <div className="border-b-2 border-gray-600"></div>
+        <div className="md:border-b-2  border-gray-600"></div>
 
-        <div className="flex gap-8 py-10">
+        <div className="flex gap-8 pt-2 md:pt-10 pb-10">
           <div className="sm:basis-3/12 sm:block hidden">
             <Suspense fallback={<h2>Sidebar Menu</h2>}>
               <Sidebar />

@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "./navbar";
 import Link from "next/link";
 import MobileNav from "./MobileNav";
+import ThemeToggle from "@/app/components/ThemeToggle";
 
 export default async function Header() {
   return (
@@ -15,10 +16,15 @@ export default async function Header() {
             Massive
           </span>
         </Link>
+        <div className="flex">
+          <div className="flex pr-2 md:pr-7 items-center">
+            <ThemeToggle />
+          </div>
 
-        <MobileNav />
+          <MobileNav />
 
-        <Navbar />
+          <Navbar />
+        </div>
       </div>
     </nav>
   );

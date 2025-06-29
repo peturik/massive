@@ -1,5 +1,4 @@
 "use client";
-import ThemeToggle from "@/app/components/ThemeToggle";
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
@@ -28,10 +27,6 @@ export default function Navbar() {
             </li>
           );
         })}
-
-        <li>
-          <ThemeToggle />
-        </li>
       </ul>
     </div>
   );
