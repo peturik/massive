@@ -17,11 +17,11 @@ export default async function AppLayout({
 }>) {
   const { user } = await validateRequest();
   return (
-    <div className=" max-w-screen-xl m-auto px-6">
+    <div className=" max-w-screen-xl m-auto px-2 md:px-6">
       <div className="font-lusitana">
         <Header />
       </div>
-      <div className="p-6 ">
+      <div className="md:p-6 p-2">
         <div className="md:flex block justify-between my-10">
           <div className="font-bold text-4xl">Font font-geist-sans</div>
           <div className=" basis-1/2 md:mt-auto mt-6">

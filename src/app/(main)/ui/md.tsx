@@ -33,7 +33,7 @@ export default function Md({
           source={post[column]}
           style={{
             background: "rgba(255, 255, 255, 0)",
-            margin: 10,
+            // margin: 10,
           }}
           rehypeRewrite={(node, _, parent) => {
             // Перевіряємо, чи вузол є HTML-елементом
