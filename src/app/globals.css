@@ -1,8 +1,9 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
-@layer base {
+@import "tailwindcss";
+/* @layer base {
   h1 {
     @apply text-3xl font-bold;
   }
@@ -27,7 +28,7 @@
     height: -moz-available;
     height: fill-available;
   }
-}
+} */
 
 h1,
 h2,
