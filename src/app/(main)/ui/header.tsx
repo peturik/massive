@@ -3,8 +3,12 @@ import Navbar from "./navbar";
 import Link from "next/link";
 import MobileNav from "./MobileNav";
 import ThemeToggle from "@/app/components/ThemeToggle";
+import { prisma } from "@/lib/prisma";
+import { Tag } from "@prisma/client";
 
-export default async function Header() {
+export default async function wHeader() {
+  const tags = (await prisma.tag.findMany()) as unknown as Tag[];
+
   return (
     <nav className="">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4 py-10">
@@ -21,7 +25,7 @@ export default async function Header() {
             <ThemeToggle />
           </div>
 
-          <MobileNav />
+          <MobileNav tags={tags} />
 
           <Navbar />
         </div>

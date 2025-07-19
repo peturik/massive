@@ -12,9 +12,9 @@ export default function Search() {
   const { replace } = useRouter();
   const themeMode = useThemeStore((state) => state.theme);
 
-  const handleSearch = useDebouncedCallback((term) => {
+  const handleSearch = useDebouncedCallback((e) => {
     const params = new URLSearchParams(searchParams);
-    const q = term.trim();
+    const q = e.trim();
     params.set("page", "1");
 
     if (q) {

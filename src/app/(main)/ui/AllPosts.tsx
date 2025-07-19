@@ -15,7 +15,7 @@ export default function AllPosts({ posts }: { posts: Promise<Post[]> }) {
           <div className="mb-12 pt-6 w-fill" key={post.id}>
             <Md post={post} column={"description"} />
             <div>
-              <Link href={post.slug}>Read more...</Link>
+              <Link href={`blog/${post.slug}`}>Read more...</Link>
             </div>
           </div>
         );

@@ -23,10 +23,10 @@ export default function Md({
       animate={{ opacity: 1, scale: 1 }}
     >
       <div className="text-3xl font-bold">
-        <Link href={post.slug}> {post.title}</Link>
+        <Link href={`blog/${post.slug}`}> {post.title}</Link>
       </div>
       <span className=" text-sm text-gray-600">
-        {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+        {formatDistanceToNow(new Date(post.updatedAt), { addSuffix: true })}
       </span>
       <div className="mt-4 mb-4">
         <MDEditor.Markdown

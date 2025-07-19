@@ -1,28 +1,17 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { Tag } from "@prisma/client";
 
-type Tags = {
-  id: number;
-  title: string;
-  rate: number;
-};
-
-const getTags = async () => {
-  const tags = prisma.tag.findMany() as unknown as Tags[];
-  return tags;
-};
-
-export const Sidebar = async () => {
-  const tags = await getTags();
-
+export const Sidebar = ({ tags }: { tags: Tag[] }) => {
   return (
     <div>
-      <h1>Sidebar</h1>
-      {tags.map((tag: Tags) => (
-        <div key={tag.id}>
-          <Link href={"#"}>{tag.title}</Link>
-        </div>
-      ))}
+      <h1>Categories</h1>
+      <div className="p-6">
+        {tags.map((tag: Tag) => (
+          <div key={tag.id}>
+            <Link href={"#"}>{tag.title}</Link>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

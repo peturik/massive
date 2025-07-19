@@ -17,6 +17,7 @@
     "@mui/material": "^6.4.12",
     "@node-rs/argon2": "^2.0.2",
     "@prisma/client": "^6.10.1",
+    "@tailwindcss/postcss": "^4.1.11",
     "@uiw/react-md-editor": "^4.0.7",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -30,6 +31,7 @@
     "react-modal": "^3.16.3",
     "slug": "^10.0.0",
     "styled-components": "^6.1.19",
+    "swr": "^2.3.4",
     "use-debounce": "^10.0.5",
     "zod": "^3.25.67",
     "zustand": "^5.0.5"

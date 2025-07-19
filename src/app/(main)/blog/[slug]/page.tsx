@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { Post } from "@prisma/client";
 import { singlePost } from "@/lib/fetchPost";
-import Md from "../ui/md";
+import Md from "@/app/(main)/ui/md";
 import { redirect } from "next/navigation";
 
 export default async function Page(props: {
@@ -12,7 +12,7 @@ export default async function Page(props: {
   const query = searchParams?.query || "";
   console.log(query);
 
-  if (query.length > 3) {
+  if (query.length) {
     return redirect("/");
   }
 

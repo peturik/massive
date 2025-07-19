@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Header from "./ui/header";
-import Footer from "./ui/footer";
-import "./style.css";
+import Header from "@/app/(main)/ui/header";
+import Footer from "@/app/(main)/ui/footer";
+import "@/app/(main)/style.css";
 import { validateRequest } from "@/lib/auth";
-import Search from "../components/search";
+import Search from "@/app/components/search";
 
 export const metadata: Metadata = {
   title: "Main Page",
@@ -16,6 +16,7 @@ export default async function AppLayout({
   children: React.ReactNode;
 }>) {
   const { user } = await validateRequest();
+
   return (
     <div className=" max-w-screen-xl m-auto px-2 md:px-6">
       <div className="font-lusitana">

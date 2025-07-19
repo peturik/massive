@@ -2,8 +2,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { headerNavLinks } from "./headerNavLinks";
+import { Sidebar } from "./sidebar";
+import { Tag } from "@prisma/client";
 
-const MobileNav = () => {
+const MobileNav = ({ tags }: { tags: Tag[] }) => {
   const [navShow, setNavShow] = useState(false);
 
   const onToggleNav = () => {
@@ -67,16 +69,19 @@ const MobileNav = () => {
         </div>
         <nav className="fixed mt-8 h-full">
           {headerNavLinks.map((link) => (
-            <div key={link.title} className="px-12 py-4">
+            <div key={link.title} className="px-8 py-1">
               <Link
                 href={link.href}
-                className="text-2xl font-bold tracking-widest text-gray-900 dark:text-gray-100"
+                className="text-xl font-bold text-gray-900 dark:text-gray-100"
                 onClick={onToggleNav}
               >
                 {link.title}
               </Link>
             </div>
           ))}
+          <div className="p-4">
+            <Sidebar tags={tags} />
+          </div>
         </nav>
       </div>
     </div>

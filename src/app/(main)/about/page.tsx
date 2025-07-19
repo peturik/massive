@@ -1,23 +1,12 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
-// import styled from "styled-components";
 
 export default async function Page() {
   const tags = await prisma.tag.findMany();
 
   return (
-    <div
-      className="px-4 py-12 lg:p-48 md:p-24 text-slate-300  "
-      style={{
-        backgroundImage: `url(/20221101_070500-EDIT.jpg)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        width: "100vw",
-        // height: "100vh",
-      }}
-    >
-      <h1 className="text-6xl  pb-20 z-100">Title</h1>
+    <div className="border py-20">
+      <h1 className="text-6xl pb-20">About</h1>
       <div className="md:flex grid font-inter text-2xl ">
         <div className="md:w-1/2 md:order-1 order-2">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab et minus
@@ -25,7 +14,7 @@ export default async function Page() {
           voluptatibus voluptates aspernatur quas reiciendis facere ducimus
           cumque perferendis ea, voluptatem temporibus.
         </div>
-        <div className="text-right md:w-1/2 md:order-2 order-1 pb-28 md:pb-8">
+        <div className="text-right md:w-1/2 md:order-2 order-1 pb-8">
           <ul className="w-full m-auto -mt-10">
             {tags.map((tag) => (
               <div key={tag.id} className="relative p-4">
