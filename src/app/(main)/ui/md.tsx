@@ -25,19 +25,21 @@ export default function Md({
       animate={{ opacity: 1, scale: 1 }}
     >
       <div className="">
-        {link ? (
-          <h1>
-            <Link href={`blog/${post.slug}`}> {post.title}</Link>
-          </h1>
-        ) : (
-          <h1>{post.title}</h1>
+        {link && (
+          <>
+            <h1>
+              <Link href={`blog/${post.slug}`}> {post.title}</Link>
+            </h1>
+            <span className=" text-sm text-gray-500">
+              {formatDistanceToNow(new Date(post.updatedAt), {
+                addSuffix: true,
+              })}
+            </span>
+          </>
         )}
-        {/* <Link href={`blog/${post.slug}`}> {post.title}</Link> */}
       </div>
-      <span className=" text-sm text-gray-500">
-        {formatDistanceToNow(new Date(post.updatedAt), { addSuffix: true })}
-      </span>
-      <div className="mt-4 mb-4 ">
+
+      <div className="mt-4 mb-4">
         <MDEditor.Markdown
           source={post[column]}
           style={{

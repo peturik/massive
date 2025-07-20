@@ -3,11 +3,11 @@ import { User } from "lucia";
 
 export default async function TopMenu({ user }: { user: User }) {
   return (
-    <div className="md:py-5 flex justify-end">
-      Hello {user.username}
-      <div className="pl-4">
+    <div className="py-5 md:pr-12 flex justify-end">
+      <div className="px-4">
         <ThemeToggle />
       </div>
+      Hello {user.username}
     </div>
   );
 }

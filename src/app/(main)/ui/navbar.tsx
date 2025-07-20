@@ -18,7 +18,7 @@ export default function Navbar() {
                 href={link.href}
                 className={
                   active
-                    ? "block py-2 px-3  rounded  sm:p-0  sm:dark:text-blue-500"
+                    ? "block py-2 px-3  rounded  sm:p-0  sm:text-blue-500"
                     : "block py-2 px-3 sm:border-0 sm:hover:text-blue-500 sm:p-0 "
                 }
               >

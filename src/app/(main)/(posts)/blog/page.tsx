@@ -8,6 +8,8 @@ import type { Post } from "@prisma/client";
 import { Sidebar } from "@/app/(main)/ui/sidebar";
 import { prisma } from "@/lib/prisma";
 import type { Tag } from "@prisma/client";
+import Link from "next/link";
+import Search from "@/app/components/search";
 
 export default async function MainPage(props: {
   searchParams?: Promise<{
@@ -27,7 +29,16 @@ export default async function MainPage(props: {
   return (
     <main>
       <div className="min-h-screen pb-8 font-[family-name:var(--font-geist-sans)] ">
-        <div className="md:border-b-2  border-gray-600"></div>
+        <div className="md:border-b-2  border-gray-600">
+          <div className="md:flex block justify-between my-10">
+            <div className="font-bold text-4xl">
+              <Link href={`/blog`}>Latest</Link>
+            </div>
+            <div className=" basis-1/2 md:mt-auto mt-6">
+              <Search />
+            </div>
+          </div>
+        </div>
 
         <div className="flex gap-8 pt-2 md:pt-10 pb-10">
           <div className="sm:basis-3/12 sm:block pt-6 hidden">

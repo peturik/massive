@@ -16,9 +16,10 @@
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "@mui/material": "^6.4.12",
     "@node-rs/argon2": "^2.0.2",
-    "@prisma/client": "^6.10.1",
+    "@prisma/client": "^6.12.0",
     "@tailwindcss/postcss": "^4.1.11",
     "@uiw/react-md-editor": "^4.0.7",
+    "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "lucia": "^3.2.2",
@@ -48,7 +49,7 @@
     "@types/webpack": "^5.28.5",
     "eslint": "^9.29.0",
     "eslint-config-next": "15.1.2",
-    "prisma": "^6.10.1",
+    "prisma": "^6.12.0",
     "typescript": "^5.8.3"
   }
 }

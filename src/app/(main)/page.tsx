@@ -9,7 +9,7 @@ export default async function Page() {
     <div
       className="px-4 py-12 lg:p-48 md:p-24 text-white text-"
       style={{
-        backgroundImage: `url(/20221101_070500-EDIT.jpg)`,
+        backgroundImage: `url(/1212.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -17,7 +17,7 @@ export default async function Page() {
         // height: "100vh",
       }}
     >
-      <div className="text-6xl  pb-20 z-100">Title</div>
+      <div className="font-danfo text-6xl  pb-20 z-100">Massive</div>
       <div className="md:flex grid">
         <div className="md:w-1/2 md:order-1 text-2xl order-2">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ab et minus
@@ -29,7 +29,7 @@ export default async function Page() {
           <ul className="w-full m-auto -mt-10">
             {tags.map((tag) => (
               <div key={tag.id} className="relative py-5">
-                <Link href={`/blog?page=1&query=${tag.title}`}>
+                <Link href={`/blog?page=1&query=${tag.title.toLowerCase()}`}>
                   <li className="font-sans text-4xl">{tag.title}</li>
                 </Link>
                 <hr className="w-3/4  absolute bottom-0 right-0 " />
