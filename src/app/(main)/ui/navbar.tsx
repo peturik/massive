@@ -9,7 +9,7 @@ export default function Navbar() {
 
   return (
     <div className="hidden w-full sm:block sm:w-auto" id="navbar-default">
-      <ul className="font-medium flex flex-col p-4 sm:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 sm:flex-row sm:space-x-8 rtl:space-x-reverse sm:mt-0 sm:border-0 sm:bg-white dark:bg-gray-800 sm:dark:bg-[#1111] dark:border-gray-700">
+      <ul className="font-alegreya flex flex-col p-4 sm:p-0 mt-4 border rounded-lg sm:flex-row sm:space-x-8 rtl:space-x-reverse sm:mt-0 sm:border-0  dark:border-gray-700">
         {headerNavLinks.map((link) => {
           const active = pathname === link.href;
           return (
@@ -18,8 +18,8 @@ export default function Navbar() {
                 href={link.href}
                 className={
                   active
-                    ? "block py-2 px-3 text-white bg-blue-700 rounded sm:bg-transparent sm:text-blue-700 sm:p-0 dark:text-white sm:dark:text-blue-500"
-                    : "block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 sm:hover:bg-transparent sm:border-0 sm:hover:text-blue-700 sm:p-0 dark:text-white sm:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white sm:dark:hover:bg-transparent"
+                    ? "block py-2 px-3  rounded  sm:p-0  sm:dark:text-blue-500"
+                    : "block py-2 px-3 sm:border-0 sm:hover:text-blue-500 sm:p-0 "
                 }
               >
                 {link.title.toLowerCase()}

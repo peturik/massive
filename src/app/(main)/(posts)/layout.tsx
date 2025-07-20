@@ -4,6 +4,7 @@ import Footer from "@/app/(main)/ui/footer";
 import "@/app/(main)/style.css";
 import { validateRequest } from "@/lib/auth";
 import Search from "@/app/components/search";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Main Page",
@@ -18,13 +19,15 @@ export default async function AppLayout({
   const { user } = await validateRequest();
 
   return (
-    <div className=" max-w-screen-xl m-auto px-2 md:px-6">
-      <div className="font-lusitana">
+    <div className="max-w-screen-xl m-auto px-2 md:px-6">
+      <div className="">
         <Header />
       </div>
       <div className="md:p-6 p-2">
         <div className="md:flex block justify-between my-10">
-          <div className="font-bold text-4xl">Font font-geist-sans</div>
+          <div className="font-bold text-4xl">
+            <Link href={`/blog`}>Latest</Link>
+          </div>
           <div className=" basis-1/2 md:mt-auto mt-6">
             <Search />
           </div>

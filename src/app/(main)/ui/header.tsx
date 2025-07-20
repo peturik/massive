@@ -6,7 +6,7 @@ import ThemeToggle from "@/app/components/ThemeToggle";
 import { prisma } from "@/lib/prisma";
 import { Tag } from "@prisma/client";
 
-export default async function wHeader() {
+export default async function Header() {
   const tags = (await prisma.tag.findMany()) as unknown as Tag[];
 
   return (
@@ -16,7 +16,7 @@ export default async function wHeader() {
           href="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <span className="font-danfo-regular self-center text-3xl font-semibold whitespace-nowrap dark:text-white">
+          <span className="font-danfo self-center text-3xl font-semibold whitespace-nowrap">
             Massive
           </span>
         </Link>

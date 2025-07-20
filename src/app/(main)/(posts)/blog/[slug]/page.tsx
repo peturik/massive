@@ -28,7 +28,7 @@ export default async function Page(props: {
           <div className="sm:basis-3/12 sm:block hidden"></div>
           <div className="sm:basis-9/12">
             <Suspense fallback={<h2>Loading...</h2>}>
-              <Md post={post} column={"body"} />
+              <Md post={post} column={"body"} link={false} />
             </Suspense>
           </div>
         </div>

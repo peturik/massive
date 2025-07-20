@@ -32,7 +32,7 @@ const MobileNav = ({ tags }: { tags: Tag[] }) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
-          className="text-gray-900 dark:text-gray-100"
+          className=""
         >
           <path
             fillRule="evenodd"
@@ -42,7 +42,7 @@ const MobileNav = ({ tags }: { tags: Tag[] }) => {
         </svg>
       </button>
       <div
-        className={`fixed top-0 left-0 z-10 h-full w-full transform bg-gray-200 opacity-95 duration-300 ease-in-out dark:bg-gray-800 ${
+        className={`fixed top-0 left-0 z-10 h-full w-full transform bg-gray-800 opacity-95 duration-300 ease-in-out ${
           navShow ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -57,7 +57,7 @@ const MobileNav = ({ tags }: { tags: Tag[] }) => {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
-              className="text-gray-900 dark:text-gray-100"
+              className=""
             >
               <path
                 fillRule="evenodd"
@@ -72,15 +72,15 @@ const MobileNav = ({ tags }: { tags: Tag[] }) => {
             <div key={link.title} className="px-8 py-1">
               <Link
                 href={link.href}
-                className="text-xl font-bold text-gray-900 dark:text-gray-100"
+                className="text-xl font-bold text-gray-100"
                 onClick={onToggleNav}
               >
                 {link.title}
               </Link>
             </div>
           ))}
-          <div className="p-4">
-            <Sidebar tags={tags} />
+          <div className="p-4 text-gray-100">
+            <Sidebar tags={tags} onToggleNav={onToggleNav} />
           </div>
         </nav>
       </div>

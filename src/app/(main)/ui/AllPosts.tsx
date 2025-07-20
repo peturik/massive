@@ -13,7 +13,7 @@ export default function AllPosts({ posts }: { posts: Promise<Post[]> }) {
         if (!post.status) return null;
         return (
           <div className="mb-12 pt-6 w-fill" key={post.id}>
-            <Md post={post} column={"description"} />
+            <Md post={post} column={"description"} link />
             <div>
               <Link href={`blog/${post.slug}`}>Read more...</Link>
             </div>

@@ -1,4 +1,4 @@
-import { Inter, Lusitana, Alegreya, Permanent_Marker } from "next/font/google";
+import { Inter, Lusitana, Alegreya, Danfo } from "next/font/google";
 
 export const inter = Inter({
   subsets: ["latin"],
@@ -20,11 +20,9 @@ export const alegreya = Alegreya({
   display: "swap",
 });
 
-export const permanentMarker = Permanent_Marker({
+export const danfo = Danfo({
   subsets: ["latin"],
   weight: ["400"],
-  variable: "--font-permanent-market",
+  variable: "--font-danfo",
   display: "swap",
 });
-
-export { danfoRegular } from "./localFonts";

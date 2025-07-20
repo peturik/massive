@@ -1,7 +1,7 @@
 // import { db } from "./db";
 import { prisma } from "./prisma";
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 10;
 
 export async function fetchFilteredPosts(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;

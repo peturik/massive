@@ -1,10 +1,13 @@
 @import "tailwindcss";
 
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities;
+@custom-variant dark (&:where(.dark, .dark *));
 
-@layer base {
+@theme {   
+  --font-danfo:  "Danfo", serif;
+  --font-alegreya: "Alegreya", serif;
+}
+
+@layer {
   h1 {
     @apply text-3xl font-bold;
   }
@@ -29,7 +32,7 @@
     height: -moz-available;
     height: fill-available;
   }
-} */
+} 
 
 h1,
 h2,
