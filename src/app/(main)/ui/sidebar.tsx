@@ -3,10 +3,10 @@ import { Tag } from "@prisma/client";
 
 export const Sidebar = ({
   tags,
-  onToggleNav,
+  handler,
 }: {
   tags: Tag[];
-  onToggleNav?: () => void;
+  handler?: () => void;
 }) => {
   return (
     <div className="">
@@ -16,7 +16,7 @@ export const Sidebar = ({
           <div key={tag.id} className="relative py-2 md:py-4">
             <Link
               href={`/blog?page=1&query=${tag.title.toLowerCase()}`}
-              onClick={onToggleNav}
+              onClick={handler}
             >
               <li className="text-xl">{tag.title}</li>
             </Link>

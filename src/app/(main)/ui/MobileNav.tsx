@@ -80,7 +80,7 @@ const MobileNav = ({ tags }: { tags: Tag[] }) => {
             </div>
           ))}
           <div className="p-4 text-gray-100">
-            <Sidebar tags={tags} onToggleNav={onToggleNav} />
+            <Sidebar tags={tags} handler={onToggleNav} />
           </div>
         </nav>
       </div>

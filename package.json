@@ -19,7 +19,6 @@
     "@prisma/client": "^6.12.0",
     "@tailwindcss/postcss": "^4.1.11",
     "@uiw/react-md-editor": "^4.0.7",
-    "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "lucia": "^3.2.2",
