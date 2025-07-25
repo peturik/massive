@@ -7,15 +7,15 @@ export default async function Page() {
 
   return (
     <div
-      className=" w-[100vw] md:h-[100vh] px-4 py-12 lg:p-36 md:p-24 text-orange-400 text-"
-      style={{
-        backgroundImage: `url(/43444.png)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        // width: "100vw",
-        // height: "100vh",
-      }}
+      className="bg-gray-900 w-[100vw] md:h-[100vh] px-4 py-12 lg:p-36 md:p-24 text-orange-400 text-"
+      // style={{
+      // backgroundImage: `url(/43444.png)`,
+      // backgroundSize: "cover",
+      // backgroundPosition: "center",
+      // backgroundRepeat: "no-repeat",
+      // width: "100vw",
+      // height: "100vh",
+      // }}
     >
       <div className="font-danfo text-6xl  pb-20 z-100">Massive</div>
       <div className="md:flex grid">
@@ -29,10 +29,18 @@ export default async function Page() {
           <div className="w-full m-auto -mt-10">
             {tags.map((tag) => (
               <div key={tag.id} className="relative py-5">
-                <Link href={`/blog?page=1&query=${tag.title.toLowerCase()}`}>
+                <Link
+                  href={{
+                    pathname: `/blog`,
+                    query: {
+                      page: 1,
+                      query: tag.title.toLowerCase(),
+                    },
+                  }}
+                >
                   <div className="font-sans text-4xl">{tag.title}</div>
                 </Link>
-                <hr className="w-3/4  absolute bottom-0 right-0 " />
+                <div className="absolute bottom-0 right-0 w-3/4 h-0.5 bg-orange-400"></div>
               </div>
             ))}
           </div>
