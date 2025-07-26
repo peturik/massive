@@ -5,6 +5,7 @@ import Md from "@/app/(main)/ui/md";
 import { redirect } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
@@ -36,7 +37,7 @@ export default async function Page(props: {
 
         <div className="flex gap-8 pt-2 md:pt-10 pb-10">
           <div className="sm:basis-3/12 sm:block hidden ">
-            <div className="sticky top-8">
+            <div className="">
               {post.imageUrl && (
                 <Image
                   src={`/${post?.imageUrl}`}
@@ -45,7 +46,20 @@ export default async function Page(props: {
                   alt="Picture of the author"
                 />
               )}
-              <p>text</p>
+            </div>
+
+            <div className="sticky top-8 pt-4">
+              <h2>Category</h2>
+              <div className="pt-2">
+                <p>
+                  {post?.tags &&
+                    post.tags.split(",").map((tag) => (
+                      <span key={tag} className="mr-2">
+                        <Link href={`/blog?query=${tag}`}>#{tag}</Link>
+                      </span>
+                    ))}
+                </p>
+              </div>
             </div>
           </div>
           <div className="sm:basis-9/12">
