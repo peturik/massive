@@ -2,8 +2,8 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme {   
-  --font-danfo:  "Danfo", serif;
+@theme {
+  --font-danfo: "Danfo", serif;
   --font-alegreya: "Alegreya", serif;
   --font-lusitana: "Lusitana", serif;
 }
@@ -33,7 +33,7 @@
     height: -moz-available;
     height: fill-available;
   }
-} 
+}
 
 h1,
 h2,
@@ -42,4 +42,16 @@ h4,
 h5,
 h6 {
   font-family: var(--font-alegreya);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
 }

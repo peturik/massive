@@ -24,12 +24,12 @@ export default function EditFormPost({ post, tags }: Props) {
   const [status, setStatus] = useState<number>(post.status);
   const [image, setImage] = useState(post.imageUrl ? `/${post.imageUrl}` : "");
   const [selectedOption, setSelectedOption] = useState<string[]>(
-    post.tags?.split(",") as string[]
+    post.tags?.split(",") as string[],
   );
   const [isOpen, setIsOpen] = useState(false);
   const [valModal, setValModal] = useState("");
   const [valueDesc, setValueDesc] = useState<string | undefined>(
-    post.description
+    post.description,
   );
   const [valueBody, setValueBody] = useState<string | undefined>(post.body);
   const theme = useThemeStore((state) => state.theme);
@@ -52,7 +52,7 @@ export default function EditFormPost({ post, tags }: Props) {
 
   const [errorMessage, formAction, isPending] = useActionState(
     updatePost,
-    undefined
+    undefined,
   );
 
   return (

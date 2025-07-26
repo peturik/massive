@@ -29,17 +29,19 @@ export default async function Page() {
           <div className="w-full m-auto -mt-10">
             {tags.map((tag) => (
               <div key={tag.id} className="relative py-5">
-                <Link
-                  href={{
-                    pathname: `/blog`,
-                    query: {
-                      page: 1,
-                      query: tag.title.toLowerCase(),
-                    },
-                  }}
-                >
-                  <div className="font-sans text-4xl">{tag.title}</div>
-                </Link>
+                <button className="text-3xl">
+                  <Link
+                    href={{
+                      pathname: "/blog",
+                      query: {
+                        page: 1,
+                        query: tag.title,
+                      },
+                    }}
+                  >
+                    {tag.title.toLowerCase()}
+                  </Link>
+                </button>
                 <div className="absolute bottom-0 right-0 w-3/4 h-0.5 bg-orange-400"></div>
               </div>
             ))}
