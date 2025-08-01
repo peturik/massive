@@ -1,40 +1,46 @@
-import mime from "mime";
-// import * as dateFn from "date-fns";
-import { join } from "path";
-import { mkdir, stat, writeFile } from "fs/promises";
+import { supabase } from "@/lib/supabaseClient";
 
 export async function saveFiles(files: File[], dir: string) {
-  const relativeUploadDir = `uploads/${dir}`;
-  //  /${dateFn.format( Date.now(), "yyyy-MM-dd")}
-  const uploadDir = join(process.cwd(), "public/", relativeUploadDir);
-
-  try {
-    await stat(uploadDir);
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      await mkdir(uploadDir, { recursive: true });
-    } else {
-      console.error(
-        "Error while trying to create directory when uploading a file\n",
-        error
-      );
-    }
-  }
-
+  const relativeUploadDir = `uploads/${dir}`; // Базовий шлях із вкладеними теками
   const arrFiles: string[] = [];
 
   try {
     for (const file of files) {
-      const buffer = Buffer.from(await file.arrayBuffer());
+      // Генерація унікального імені файлу
       const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-      const filename = `${uniqueSuffix}.${mime.getExtension(file.type)}`;
+      const fileExt = file.name.split(".").pop() || "unknown";
+      const filename = `${uniqueSuffix}.${fileExt}`;
+      const filePath = `${relativeUploadDir}/${filename}`; // Повний шлях із теками
 
-      await writeFile(`${uploadDir}/${filename}`, buffer);
+      // Завантаження файлу в Supabase Storage
+      const { data, error } = await supabase.storage
+        .from("uploads") // Назва бакета
+        .upload(filePath, file, {
+          contentType: file.type,
+          cacheControl: "3600",
+          upsert: false,
+        });
 
-      arrFiles.push(`${relativeUploadDir}/${filename}`);
+      if (data) {
+        console.log(`File ${filename} uploaded successfully.`);
+      }
+
+      if (error) {
+        console.error(`Error uploading file ${filename}:`, error.message);
+        throw error;
+      }
+
+      // Отримання публічного URL файлу
+      const { data: publicUrlData } = supabase.storage
+        .from("uploads")
+        .getPublicUrl(filePath);
+
+      arrFiles.push(publicUrlData.publicUrl);
     }
   } catch (error) {
-    console.error("Error while trying to upload a file\n", error);
+    console.error("Error while trying to upload files to Supabase:", error);
+    throw error;
   }
+
   return arrFiles;
 }

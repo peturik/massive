@@ -61,3 +61,27 @@ export async function singlePost(slug: string) {
     throw new Error("Failed to fetch post.");
   }
 }
+
+export async function relatedPosts(query: string) {
+  console.log(query);
+  try {
+    const posts = await prisma.post.findMany({
+      select: {
+        title: true,
+        slug: true,
+      },
+      where: {
+        OR: [
+          { title: { contains: query, mode: "insensitive" } },
+          { body: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      orderBy: { createdAt: "desc" }, // якщо в моделі поле називається createdAt (але в БД created_at)
+    });
+
+    return posts;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch post.");
+  }
+}
