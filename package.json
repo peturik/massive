@@ -16,7 +16,7 @@
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "@mui/material": "^6.4.12",
     "@node-rs/argon2": "^2.0.2",
-    "@prisma/client": "^6.12.0",
+    "@prisma/client": "^6.13.0",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.52.1",
     "@tailwindcss/postcss": "^4.1.11",
@@ -50,7 +50,7 @@
     "@types/webpack": "^5.28.5",
     "eslint": "^9.29.0",
     "eslint-config-next": "15.1.2",
-    "prisma": "^6.12.0",
+    "prisma": "^6.13.0",
     "typescript": "^5.8.3"
   }
 }

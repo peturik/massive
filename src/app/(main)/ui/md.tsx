@@ -3,8 +3,6 @@ import { useThemeStore } from "@/stores/useThemeStore";
 import MDEditor from "@uiw/react-md-editor";
 import { motion } from "motion/react";
 import type { Post } from "@prisma/client";
-import { formatDistanceToNow } from "date-fns";
-import Link from "next/link";
 
 export default function Md({
   post,

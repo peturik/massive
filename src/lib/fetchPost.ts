@@ -1,5 +1,5 @@
-// import { db } from "./db";
 import { prisma } from "./prisma";
+import { Prisma } from "@prisma/client";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -65,8 +65,8 @@ export async function singlePost(slug: string) {
 export async function relatedPosts(query: string[], slug: string) {
   if (query.length === 0) return [];
 
-  const q = query.map((q) => ({
-    title: { contains: q, mode: "insensitive" },
+  const q: Prisma.PostWhereInput[] = query.map((item: string) => ({
+    title: { contains: item, mode: "insensitive" },
   }));
 
   try {
@@ -76,7 +76,7 @@ export async function relatedPosts(query: string[], slug: string) {
         slug: true,
       },
       where: {
-        OR: q as any,
+        OR: q,
         NOT: {
           slug: { equals: slug },
         },
