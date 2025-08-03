@@ -9,11 +9,9 @@ import Link from "next/link";
 export default function Md({
   post,
   column,
-  link,
 }: {
   post: Post;
   column: "body" | "description";
-  link: true | false;
 }) {
   const theme = useThemeStore((state) => state.theme);
 
@@ -24,21 +22,6 @@ export default function Md({
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1 }}
     >
-      <div className="">
-        {link && (
-          <>
-            <h1>
-              <Link href={`blog/${post.slug}`}> {post.title}</Link>
-            </h1>
-            <span className=" text-sm text-gray-500">
-              {formatDistanceToNow(new Date(post.updatedAt), {
-                addSuffix: true,
-              })}
-            </span>
-          </>
-        )}
-      </div>
-
       <div className="mt-4 mb-4">
         <MDEditor.Markdown
           source={post[column]}

@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
+import { validateRequest } from "@/lib/auth";
 
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
@@ -13,6 +14,7 @@ export default async function Page(props: {
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
+  const { user } = await validateRequest();
 
   if (query.length) {
     return redirect("/");
@@ -21,7 +23,11 @@ export default async function Page(props: {
   const { slug } = await props.params;
   const post = (await singlePost(slug)) as Post;
 
-  const related = await relatedPosts(post?.tags?.split(",")[0] as string);
+  const r = post?.tags?.split(",").filter((tag) => {
+    return post.title.toLowerCase().match(tag.toLowerCase());
+  });
+
+  const related = await relatedPosts(r as string[], post.slug);
 
   return (
     <div>
@@ -29,22 +35,50 @@ export default async function Page(props: {
         <div className="border-b-2 flex justify-center border-gray-600">
           <div className="my-10">
             <div className="text-4xl font-bold">{post.title}</div>
-            <div className="pl-2 text-sm text-gray-500">
+            <div className="pl-2 text-xs text-gray-500">
               {post.createdAt.toString() === post.updatedAt.toString() ? (
                 <div>
-                  <div className="text-gray-900">created at: </div>
+                  <span className="text-gray-400">created at: </span>
                   {formatDistanceToNow(new Date(post.createdAt), {
                     addSuffix: true,
                   })}
                 </div>
               ) : (
                 <div>
-                  updated at:{" "}
+                  <span className="text-gray-400">updated at: </span>
                   {formatDistanceToNow(new Date(post.updatedAt), {
                     addSuffix: true,
                   })}
                 </div>
               )}
+              <div>
+                {user?.isAdmin && (
+                  <Link
+                    href={`/dashboard/posts/${post.id}/edit`}
+                    className="hover:underline text-blue-400 text-sm"
+                  >
+                    Update this post
+                  </Link>
+                )}
+              </div>
+
+              <div className="sm:hidden sticky top-8 pt-4">
+                <div className="pt-2">
+                  <p>
+                    {post?.tags &&
+                      post.tags.split(",").map((tag) => (
+                        <span key={tag} className="mr-2">
+                          <Link
+                            className="hover:underline text-blue-400"
+                            href={`/blog?query=${tag}`}
+                          >
+                            #{tag}
+                          </Link>
+                        </span>
+                      ))}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -78,14 +112,19 @@ export default async function Page(props: {
           </div>
           <div className="sm:basis-9/12">
             <Suspense fallback={<h2>Loading...</h2>}>
-              <Md post={post} column={"body"} link={false} />
+              <Md post={post} column={"body"} />
             </Suspense>
             <div className="pt-8">
               Related articles:
               <div className="pt-2">
                 {related.map((post) => (
                   <div key={post.slug} className="pt-2">
-                    <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                    <Link
+                      className="hover:underline text-blue-400"
+                      href={`/blog/${post.slug}`}
+                    >
+                      {post.title}
+                    </Link>
                   </div>
                 ))}
               </div>

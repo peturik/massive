@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import type { Tag } from "@prisma/client";
 import Link from "next/link";
 import Search from "@/app/components/search";
+import { validateRequest } from "@/lib/auth";
 
 export default async function BlogPage(props: {
   searchParams?: Promise<{
@@ -21,6 +22,7 @@ export default async function BlogPage(props: {
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchCountPosts(query);
+  const { user } = await validateRequest();
 
   const tags = (await prisma.tag.findMany()) as unknown as Tag[];
 
@@ -48,7 +50,7 @@ export default async function BlogPage(props: {
           </div>
           <div className="sm:basis-9/12">
             <Suspense key={query + currentPage} fallback={<h2>Loading...</h2>}>
-              <AllPosts posts={posts} />
+              <AllPosts posts={posts} user={user} />
             </Suspense>
           </div>
         </div>

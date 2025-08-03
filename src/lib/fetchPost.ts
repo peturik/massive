@@ -62,8 +62,13 @@ export async function singlePost(slug: string) {
   }
 }
 
-export async function relatedPosts(query: string) {
-  console.log(query);
+export async function relatedPosts(query: string[], slug: string) {
+  if (query.length === 0) return [];
+
+  const q = query.map((q) => ({
+    title: { contains: q, mode: "insensitive" },
+  }));
+
   try {
     const posts = await prisma.post.findMany({
       select: {
@@ -71,10 +76,10 @@ export async function relatedPosts(query: string) {
         slug: true,
       },
       where: {
-        OR: [
-          { title: { contains: query, mode: "insensitive" } },
-          { body: { contains: query, mode: "insensitive" } },
-        ],
+        OR: q as any,
+        NOT: {
+          slug: { equals: slug },
+        },
       },
       orderBy: { createdAt: "desc" }, // якщо в моделі поле називається createdAt (але в БД created_at)
     });
