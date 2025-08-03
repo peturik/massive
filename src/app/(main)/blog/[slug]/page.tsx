@@ -35,17 +35,17 @@ export default async function Page(props: {
         <div className="border-b-2 flex justify-center border-gray-600">
           <div className="my-10">
             <div className="text-4xl font-bold">{post.title}</div>
-            <div className="pl-2 text-xs text-gray-500">
+            <div className="pl-2  text-gray-500">
               {post.createdAt.toString() === post.updatedAt.toString() ? (
-                <div>
-                  <span className="text-gray-400">created at: </span>
+                <div className="text-sm text-gray-600">
+                  <span className=" text-gray-400">created at: </span>
                   {formatDistanceToNow(new Date(post.createdAt), {
                     addSuffix: true,
                   })}
                 </div>
               ) : (
-                <div>
-                  <span className="text-gray-400">updated at: </span>
+                <div className="text-sm text-gray-600">
+                  <span className=" text-gray-400">updated at: </span>
                   {formatDistanceToNow(new Date(post.updatedAt), {
                     addSuffix: true,
                   })}
@@ -62,7 +62,7 @@ export default async function Page(props: {
                 )}
               </div>
 
-              <div className="sm:hidden sticky top-8 pt-4">
+              <div className="sm:hidden sticky">
                 <div className="pt-2">
                   <p>
                     {post?.tags &&
@@ -103,7 +103,12 @@ export default async function Page(props: {
                   {post?.tags &&
                     post.tags.split(",").map((tag) => (
                       <span key={tag} className="mr-2">
-                        <Link href={`/blog?query=${tag}`}>#{tag}</Link>
+                        <Link
+                          href={`/blog?query=${tag}`}
+                          className="hover:underline text-blue-400 text-lg"
+                        >
+                          #{tag}
+                        </Link>
                       </span>
                     ))}
                 </p>
