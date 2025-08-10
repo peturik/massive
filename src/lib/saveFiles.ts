@@ -1,7 +1,7 @@
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/utils/supabase/supabaseClient";
 
 export async function saveFiles(files: File[], dir: string) {
-  const relativeUploadDir = `uploads/${dir}`; // Базовий шлях із вкладеними теками
+  const relativeUploadDir = `/${dir}`; // Базовий шлях із вкладеними теками
   const arrFiles: string[] = [];
 
   try {
@@ -26,6 +26,7 @@ export async function saveFiles(files: File[], dir: string) {
       }
 
       if (error) {
+        console.log(filePath);
         console.error(`Error uploading file ${filename}:`, error.message);
         throw error;
       }

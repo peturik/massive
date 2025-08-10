@@ -9,11 +9,11 @@ export const SignInFormSchema = z.object({
 });
 
 export const SignUpFormSchema = z.object({
-  username: z
-    .string()
-    .min(3, { message: "Name must be at least 3 characters long." })
-    .max(31, { message: "Name must be at max 31 characters long." })
-    .trim(),
+  // username: z
+  //   .string()
+  //   .min(3, { message: "Name must be at least 3 characters long." })
+  //   .max(31, { message: "Name must be at max 31 characters long." })
+  //   .trim(),
   email: z.string().email({ message: "Please enter a valid email." }).trim(),
   password: z
     .string()
@@ -29,7 +29,7 @@ export const SignUpFormSchema = z.object({
 export type FormState =
   | {
       errors?: {
-        username?: string[];
+        // username?: string[];
         email?: string[];
         password?: string[];
       };

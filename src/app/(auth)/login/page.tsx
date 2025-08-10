@@ -1,12 +1,8 @@
-import { validateRequest } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { LoginForm } from "../ui/loginForm";
+"use client";
 
-export default async function Page() {
-  const { user } = await validateRequest();
-  if (user) {
-    return redirect("/");
-  }
+import { LoginForm } from "@/app/(auth)/ui/loginForm";
+
+export default function LoginPage() {
   return (
     <main className="flex items-center justify-center md:h-screen">
       <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">

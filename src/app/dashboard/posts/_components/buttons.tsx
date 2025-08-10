@@ -31,7 +31,7 @@ export function UpdatePost({ id }: { id: string }) {
 }
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 // ReactModal.setAppElement('#yourAppElement');
-export function DeletePost({ id, title }: { id: string; title: string }) {
+export function DeletePost({ title }: { title: string }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const closeModal = () => {
@@ -39,7 +39,7 @@ export function DeletePost({ id, title }: { id: string; title: string }) {
   };
 
   const handleDeletePost = async (formData: FormData) => {
-    await deletePost(formData, id);
+    await deletePost(formData);
     closeModal();
   };
   return (

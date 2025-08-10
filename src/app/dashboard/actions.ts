@@ -1,16 +1,111 @@
 "use server";
 import { PostSchema } from "./ui/zod";
-import { promises as fs } from "fs";
 import { redirect } from "next/navigation";
-import { saveFiles } from "@/lib/saveFiles";
 import { z } from "zod";
-import { join } from "path";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { createClient } from "@/utils/supabase/server";
 
 const postSchema = PostSchema();
 
-/* INSERT INTO */
+/**
+ * Допоміжна функція для обробки тегів.
+ * @param tagsString Рядок тегів, розділених комою.
+ * @returns Масив тегів.
+ */
+async function handleTags(tagsString: string | undefined) {
+  const tagsForm =
+    tagsString
+      ?.split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0) || [];
+
+  if (tagsForm.length > 0) {
+    await Promise.all(
+      tagsForm.map((tag) =>
+        prisma.tag.upsert({
+          where: { title: tag },
+          update: {},
+          create: { title: tag },
+        })
+      )
+    );
+  }
+  return tagsForm;
+}
+
+/**
+ * Допоміжна функція для завантаження файлів у Supabase Storage.
+ * @param files Масив об'єктів File.
+ * @param dir Назва теки для завантаження.
+ * @returns Масив публічних URL-адрес завантажених файлів.
+ */
+async function uploadSupabaseFiles(files: File[], dir: string) {
+  const arrFiles: string[] = [];
+  const uploadDir = dir;
+  const supabase = await createClient();
+
+  for (const file of files) {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const fileExt = file.name.split(".").pop() || "unknown";
+    const filename = `${uniqueSuffix}.${fileExt}`;
+    const filePath = `/${uploadDir}/${filename}`;
+
+    const { error } = await supabase.storage
+      .from("uploads")
+      .upload(filePath, file, {
+        contentType: file.type,
+        upsert: false,
+      });
+
+    if (error) {
+      console.log(file);
+      console.error(`Error uploading file ${filename}:`, error.message);
+      throw new Error(`Failed to upload file: ${error.message}`);
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from("uploads")
+      .getPublicUrl(filePath);
+
+    arrFiles.push(publicUrlData.publicUrl);
+  }
+
+  return arrFiles;
+}
+
+/**
+ * Допоміжна функція для видалення теки із Supabase Storage.
+ * @param dirPath Шлях до теки для видалення.
+ */
+async function deleteSupabaseFolder(dirPath: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.storage.from("uploads").list(dirPath);
+
+  if (error) {
+    console.error(`Error listing files in folder ${dirPath}:`, error.message);
+    throw new Error(`Failed to list files: ${error.message}`);
+  }
+
+  if (data && data.length > 0) {
+    const filePaths = data.map((file) => `${dirPath}/${file.name}`);
+    const { error: removeError } = await supabase.storage
+      .from("uploads")
+      .remove(filePaths);
+
+    if (removeError) {
+      console.error(
+        `Error removing files from folder ${dirPath}:`,
+        removeError.message
+      );
+      throw new Error(`Failed to remove files: ${removeError.message}`);
+    }
+  }
+}
+
+/* `createPost` (Створення нового поста) */
+
 export async function createPost(
   prevState: string | undefined,
   formData: FormData,
@@ -30,26 +125,13 @@ export async function createPost(
       });
 
     const statusValue = status ? Number(status) : 0;
+    let imageUrl = "";
 
-    let image_url = "";
-
-    if (image?.size) {
-      [image_url] = await saveFiles([image], slug);
+    if (image instanceof File && image?.size > 0) {
+      [imageUrl] = await uploadSupabaseFiles([image], slug);
     }
 
-    const tagsForm = tags?.split(",") || [];
-
-    if (tagsForm[0].length > 0) {
-      await Promise.all(
-        tagsForm.map(async (tag) => {
-          await prisma.tag.upsert({
-            where: { title: tag },
-            update: {},
-            create: { title: tag },
-          });
-        })
-      );
-    }
+    const tagsForm = await handleTags(tags);
 
     await prisma.post.create({
       data: {
@@ -58,17 +140,18 @@ export async function createPost(
         description,
         body,
         tags: tagsForm.join(","),
-        imageUrl: image_url,
+        imageUrl: imageUrl,
         status: statusValue,
         userId: userId,
       },
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log(error);
-      return `Error db: ${error.issues.map((e) => e.message)}`;
+      console.error(error);
+      return `Error db: ${error.issues.map((e) => e.message).join(", ")}`;
     } else {
-      console.log("Error occured: " + error);
+      console.error("Error occurred: " + error);
+      return "Failed to create post.";
     }
   }
 
@@ -95,42 +178,28 @@ export async function updatePost(
         status: formData.get("status"),
       });
 
-    let image_url = "";
+    const post = await prisma.post.findUnique({
+      where: { id },
+      select: { imageUrl: true, slug: true },
+    });
 
-    // Обробка зображення
-    if (image?.size) {
-      const post = await prisma.post.findUnique({
-        where: { id },
-        select: { imageUrl: true },
-      });
+    if (!post) {
+      return "Post not found.";
+    }
 
-      if (post?.imageUrl) {
-        await fs.rm(join(process.cwd(), "public/", post.imageUrl));
+    let imageUrl = post.imageUrl;
+
+    // Якщо завантажується нове зображення
+    if (image instanceof File && image?.size > 0) {
+      // Видаляємо старе зображення з Supabase
+      if (post.slug) {
+        await deleteSupabaseFolder(post.slug);
       }
-
-      [image_url] = await saveFiles([image], slug);
-    } else {
-      const post = await prisma.post.findUnique({
-        where: { id },
-        select: { imageUrl: true },
-      });
-      image_url = post?.imageUrl || "";
+      // Завантажуємо нове зображення
+      [imageUrl] = await uploadSupabaseFiles([image], slug);
     }
 
-    // Обробка тегів
-    const tagsForm = tags?.split(",") || [];
-
-    if (tagsForm[0].length > 0) {
-      await Promise.all(
-        tagsForm.map(async (tag) => {
-          await prisma.tag.upsert({
-            where: { title: tag },
-            update: {},
-            create: { title: tag },
-          });
-        })
-      );
-    }
+    const tagsForm = await handleTags(tags);
 
     // Оновлення поста
     await prisma.post.update({
@@ -141,16 +210,16 @@ export async function updatePost(
         description,
         body,
         tags: tagsForm.join(","),
-        imageUrl: image_url,
+        imageUrl: imageUrl,
         status: Number(status),
       },
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log(error);
-      return `Error: ${error.issues.map((e) => e.message)}`;
+      console.error(error);
+      return `Error: ${error.issues.map((e) => e.message).join(", ")}`;
     } else {
-      console.log("Error occurred: ", error);
+      console.error("Error occurred: ", error);
       return "Failed to update post";
     }
   }
@@ -160,29 +229,25 @@ export async function updatePost(
 }
 
 /* DELETE FROM */
-export async function deletePost(formData: FormData, id: string) {
+export async function deletePost(formData: FormData) {
+  const id = formData.get("id") as string;
+
   try {
-    // Отримуємо пост для видалення
     const post = await prisma.post.findUnique({
       where: { id },
-      select: { slug: true, imageUrl: true },
+      select: { slug: true },
     });
 
     if (!post) {
       throw new Error("Post not found");
     }
 
-    // Видаляємо пов'язані файли
-    const dir = join(process.cwd(), "/public/uploads/", post.slug);
-    try {
-      if (await fs.stat(dir)) {
-        await fs.rm(dir, { recursive: true });
-      }
-    } catch (error) {
-      console.log("Error removing directory: ", error);
+    // Видаляємо теку з файлами із Supabase Storage
+    if (post.slug) {
+      await deleteSupabaseFolder(post.slug);
     }
 
-    // Видаляємо сам пост
+    // Видаляємо сам пост з бази даних
     await prisma.post.delete({
       where: { id },
     });
@@ -190,7 +255,7 @@ export async function deletePost(formData: FormData, id: string) {
     revalidatePath("/dashboard/posts");
     return { success: true };
   } catch (error) {
-    console.log("Delete post error: ", error);
+    console.error("Delete post error: ", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to delete post",

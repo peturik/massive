@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { validateRequest } from "@/lib/auth";
+import { authUser } from "@/utils/supabase/server";
 
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
@@ -14,7 +14,8 @@ export default async function Page(props: {
 }) {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
-  const { user } = await validateRequest();
+
+  const { role } = await authUser();
 
   if (query.length) {
     return redirect("/");
@@ -52,7 +53,7 @@ export default async function Page(props: {
                 </div>
               )}
               <div>
-                {user?.isAdmin && (
+                {role && (
                   <Link
                     href={`/dashboard/posts/${post.id}/edit`}
                     className="hover:underline text-blue-400 text-sm"
@@ -88,7 +89,7 @@ export default async function Page(props: {
             <div className="">
               {post.imageUrl && (
                 <Image
-                  src={`/${post?.imageUrl}`}
+                  src={post?.imageUrl}
                   width={500}
                   height={500}
                   alt="Picture of the author"

@@ -228,7 +228,11 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
             >
               Cancel
             </Link>
-            <Button type="submit" aria-disabled={isPending}>
+            <Button
+              className="cursor-pointer"
+              type="submit"
+              aria-disabled={isPending}
+            >
               Create Post
             </Button>
           </div>

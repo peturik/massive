@@ -3,15 +3,14 @@ import type { Post } from "@prisma/client";
 import Md from "./md";
 import { use } from "react";
 import Link from "next/link";
-import { User } from "lucia";
 import { formatDistanceToNow } from "date-fns";
 
 export default function AllPosts({
   posts,
-  user,
+  role,
 }: {
   posts: Promise<Post[]>;
-  user: User | null;
+  role: string;
 }) {
   const allPosts = use(posts);
 
@@ -31,7 +30,7 @@ export default function AllPosts({
                 })}
               </span>
             </div>
-            {user?.isAdmin && (
+            {role == "admin" && (
               <div className="text-sm">
                 <Link
                   href={`/dashboard/posts/${post.id}/edit`}

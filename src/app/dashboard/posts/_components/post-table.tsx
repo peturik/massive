@@ -42,7 +42,7 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                       <div className="mb-2 flex items-center">
                         {post.imageUrl && (
                           <Image
-                            src={`/${post.imageUrl}`}
+                            src={post.imageUrl}
                             className="mr-2 rounded-full"
                             width={40}
                             height={40}
@@ -68,7 +68,7 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                       <Suspense fallback={<h2>Loading...</h2>}>
                         <UpdatePost id={post.id} />
                       </Suspense>
-                      <DeletePost id={post.id} title={post.title} />
+                      <DeletePost title={post.title} />
                     </div>
                   </div>
                 </div>
@@ -121,7 +121,7 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                     <div className="flex items-center gap-3">
                       {post.imageUrl && (
                         <Image
-                          src={`/${post.imageUrl}`}
+                          src={post.imageUrl}
                           className="w-20 h-auto "
                           width={40}
                           height={28}
@@ -158,7 +158,7 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                   <td className="whitespace-normal py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdatePost id={post.id} />
-                      <DeletePost id={post.id} title={post.title} />
+                      <DeletePost title={post.title} />
                     </div>
                   </td>
                 </tr>

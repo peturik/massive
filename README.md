@@ -2,13 +2,13 @@
 
 ## Project Description
 
-**Massive** is a web application developed using the Next.js framework and TypeScript. The application uses the [Lucia Auth](https://github.com/pilcrowOnPaper/lucia-auth) library to manage user authentication, providing a simple and flexible way to handle users and sessions. The project also includes an Admin Panel.
+**Massive** is a web application developed using the Next.js framework and TypeScript. The project also includes an Admin Panel.
 
 ## Technologies and Libraries Used
 
 - **Next.js** — A React framework that supports server-side rendering and static site generation.
 - **TypeScript** — A programming language that adds static typing to JavaScript.
-- **Lucia Auth** — An authentication library that abstracts user and session management from the application and database.
+- **Supabase** — Managed DB that abstracts user and session management from the application and database.
 - **Tailwind CSS** — A utility-first CSS framework for rapid UI styling.
 - **ESLint** — A code analysis tool that helps maintain code quality and consistency.
 - **PostCSS** — A tool for transforming CSS using plugins.
@@ -57,5 +57,3 @@
 
 - Ensure that Node.js and pnpm are installed on your system.
 - Configure necessary environment variables according to project requirements.
-
-This project showcases the integration of Lucia Auth with Next.js for user authentication, the use of modern UI libraries (MUI, Tailwind CSS), and the implementation of smooth animations (Framer Motion).

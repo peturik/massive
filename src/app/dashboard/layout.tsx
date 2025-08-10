@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import SideNav from "./ui/sidenav";
 import TopMenu from "./ui/top-menu";
-import { validateRequest } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { authUser } from "@/utils/supabase/server";
 
 export const metadata: Metadata = {
   title: "Admin panel",
@@ -14,10 +14,15 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = await validateRequest();
+  const { user, role, error } = await authUser();
 
-  if (!user) return redirect("/login");
-  if (user.isAdmin !== true) return redirect("/");
+  if (error || !user) {
+    redirect("/login");
+  }
+
+  if (role != "admin") {
+    redirect("/blog");
+  }
 
   return (
     <div className={`font-lusitana bg-gray-100 dark:bg-black`}>
@@ -28,7 +33,7 @@ export default async function Layout({
           <SideNav />
         </div>
         <div className="bg-white dark:bg-slate-800 dark:text-slate-300 flex-grow px-6 md:overflow-y-auto md:px-12 md:pb-12 my-4 rounded-md">
-          <TopMenu user={user} />
+          <TopMenu user={user?.email} />
           {children}
         </div>
       </div>

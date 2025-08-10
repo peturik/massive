@@ -1,17 +1,13 @@
 "use client";
-import {
-  AtSymbolIcon,
-  KeyIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/outline";
+import { AtSymbolIcon, KeyIcon } from "@heroicons/react/24/outline";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "./button";
 import { useActionState, useState } from "react";
-import { signUp } from "../actions";
+import { signUp } from "@/app/(auth)/actions";
 import Link from "next/link";
 
 export default function RegisterForm() {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [state, action, pending] = useActionState(signUp, undefined);
   return (
     <form action={action} className="space-y-4">
@@ -20,31 +16,6 @@ export default function RegisterForm() {
           Please register in to continue.
         </h1>
         <div className="w-full">
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900 dark:text-gray-400"
-              htmlFor="email"
-            >
-              Name
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200  dark:bg-slate-700 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="username"
-                type="text"
-                name="username"
-                value={form.username}
-                placeholder="Enter your name"
-                onChange={(e) => setForm({ ...form, username: e.target.value })}
-                required
-              />
-              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
-          {state?.errors?.username && (
-            <p className="text-sm text-red-500 mt-2">{state.errors.username}</p>
-          )}
-
           <div>
             <label
               className="mb-3 mt-5 block text-xs font-medium text-gray-900 dark:text-gray-400"

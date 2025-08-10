@@ -10,7 +10,8 @@ import { prisma } from "@/lib/prisma";
 import type { Tag } from "@prisma/client";
 import Link from "next/link";
 import Search from "@/app/components/search";
-import { validateRequest } from "@/lib/auth";
+// import { validateRequest } from "@/lib/auth";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function BlogPage(props: {
   searchParams?: Promise<{
@@ -22,7 +23,19 @@ export default async function BlogPage(props: {
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchCountPosts(query);
-  const { user } = await validateRequest();
+  // const { user } = await validateRequest();
+
+  const supabase = createClient();
+  const data = (await supabase).auth.getUser();
+  const user = (await data).data.user;
+
+  const profile = (await supabase)
+    .from("profiles")
+    .select("role")
+    .eq("id", user?.id)
+    .single();
+
+  const role: string = (await profile).data?.role;
 
   const tags = (await prisma.tag.findMany()) as unknown as Tag[];
 
@@ -50,13 +63,14 @@ export default async function BlogPage(props: {
           </div>
           <div className="sm:basis-9/12">
             <Suspense key={query + currentPage} fallback={<h2>Loading...</h2>}>
-              <AllPosts posts={posts} user={user} />
+              <AllPosts posts={posts} role={role} />
             </Suspense>
           </div>
         </div>
 
         <div className="mt-5 flex w-full justify-center">
           <Suspense fallback={<h2>Sidebar Menu</h2>}>
+            {" "}
             <Pagination totalPages={totalPages} />
           </Suspense>
         </div>

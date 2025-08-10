@@ -31,12 +31,12 @@ const ThemeToggle = () => {
   const toggleTheme = () => {
     setTheme(theme === "dark" || resolvedTheme === "dark" ? "light" : "dark");
     storeSetTheme(
-      theme === "dark" || resolvedTheme === "dark" ? "light" : "dark",
+      theme === "dark" || resolvedTheme === "dark" ? "light" : "dark"
     );
   };
 
   return (
-    <button onClick={toggleTheme} className="">
+    <button onClick={toggleTheme} className="cursor-pointer">
       {theme === "dark" ? "🌞" : "🌙"}
     </button>
   );
