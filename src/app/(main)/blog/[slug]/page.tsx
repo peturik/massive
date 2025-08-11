@@ -53,7 +53,7 @@ export default async function Page(props: {
                 </div>
               )}
               <div>
-                {role && (
+                {role === "admin" && (
                   <Link
                     href={`/dashboard/posts/${post.id}/edit`}
                     className="hover:underline text-blue-400 text-sm"

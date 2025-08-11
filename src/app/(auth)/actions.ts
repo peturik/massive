@@ -36,8 +36,8 @@ export async function signIn(
     return { message: "Incorrect email or password" };
   }
 
-  revalidatePath("/dashboard", "layout");
-  redirect("/dashboard");
+  revalidatePath("/dashboard/posts", "layout");
+  redirect("/dashboard/posts");
 }
 
 export async function signUp(
@@ -77,6 +77,6 @@ export async function signOut(): Promise<ActionResult> {
   if (error) {
     redirect("/error");
   }
-  revalidatePath("/", "layout");
-  redirect("/");
+  revalidatePath("/blog", "layout");
+  redirect("/blog");
 }
