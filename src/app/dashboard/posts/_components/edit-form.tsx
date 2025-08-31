@@ -5,10 +5,10 @@ import Image from "next/image";
 import { useActionState, useState } from "react";
 import slug from "slug";
 import { Button } from "./button";
-import type { Post } from "@prisma/client";
+import type { Post } from "@/types/types";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { AnimatePresence } from "motion/react";
-import type { Tag } from "@prisma/client";
+import type { Tag } from "@/types/types";
 import ModalPost from "./modal-post";
 import MDEditor from "@uiw/react-md-editor";
 import { useThemeStore } from "@/stores/useThemeStore";
@@ -22,7 +22,7 @@ type Props = {
 export default function EditFormPost({ post, tags }: Props) {
   const [title, setTitle] = useState(post.title);
   const [status, setStatus] = useState<number>(post.status);
-  const [image, setImage] = useState(post.imageUrl ? post.imageUrl : "");
+  const [image, setImage] = useState(post.image_url ? post.image_url : "");
   const [selectedOption, setSelectedOption] = useState<string[]>(
     post.tags?.split(",") as string[]
   );
@@ -205,7 +205,7 @@ export default function EditFormPost({ post, tags }: Props) {
             <label htmlFor="image">Image</label>
             {image && (
               <Image
-                src={post.imageUrl!}
+                src={post.image_url!}
                 alt={post.slug}
                 width={200}
                 height={200}

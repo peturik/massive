@@ -8,7 +8,7 @@ import {
   SignUpFormSchema,
 } from "@/lib/definition";
 
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { ActionResult } from "@/lib/form";
 
 export async function signIn(

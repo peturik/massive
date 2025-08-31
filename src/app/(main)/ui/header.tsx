@@ -3,11 +3,10 @@ import Navbar from "./navbar";
 import Link from "next/link";
 import MobileNav from "./MobileNav";
 import ThemeToggle from "@/app/components/ThemeToggle";
-import { prisma } from "@/lib/prisma";
-import { Tag } from "@prisma/client";
+import { getTags } from "@/lib/fetchPost";
 
 export default async function Header() {
-  const tags = (await prisma.tag.findMany()) as unknown as Tag[];
+  const tags = await getTags();
 
   return (
     <nav className="">

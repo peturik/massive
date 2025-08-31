@@ -19,8 +19,8 @@ export function PostSchema() {
     image: z
       .instanceof(File)
       .refine(
-        (file: File) => file.size < 2048000,
-        "File size must be less than 2Mb"
+        (file: File) => file.size < 5120000,
+        "File size must be less than 5Mb"
       )
       .refine(
         (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
@@ -30,8 +30,8 @@ export function PostSchema() {
     //   .array(z.instanceof(File))
     //   .min(1, "At least 1 file is required")
     //   .refine(
-    //     (files) => files.every((file) => file.size < 2048000),
-    //     "File size must be less than 2Mb"
+    //     (files) => files.every((file) => file.size < 5120000),
+    //     "File size must be less than 5Mb"
     //   ),
     status: z.coerce.number(),
     created_at: z.date(),

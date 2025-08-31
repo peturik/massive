@@ -1,25 +1,28 @@
-import { prisma } from "./prisma";
-import { Prisma } from "@prisma/client";
+import { createClient } from "./supabase/server";
 
 const ITEMS_PER_PAGE = 10;
 
 export async function fetchFilteredPosts(query: string, currentPage: number) {
+  const supabase = await createClient();
+
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const posts = await prisma.post.findMany({
-      where: {
-        OR: [
-          { body: { contains: query, mode: "insensitive" } }, // аналог ILIKE
-          { title: { contains: query, mode: "insensitive" } }, // не чутливий до регістру
-          { tags: { contains: query, mode: "insensitive" } }, // щоб був чутливий до регістру
-          { slug: { contains: query, mode: "insensitive" } }, // треба видалити mode
-        ],
-      },
-      orderBy: { createdAt: "desc" }, // якщо в моделі поле називається createdAt (але в БД created_at)
-      take: ITEMS_PER_PAGE, // LIMIT
-      skip: offset, // OFFSET
-    });
+    // Створюємо запит до Supabase
+    const supabaseQuery = supabase
+      .from("posts")
+      .select("*")
+      .or(
+        `body.ilike.%${query}%,title.ilike.%${query}%,tags.ilike.%${query}%,slug.ilike.%${query}%`
+      )
+      .order("created_at", { ascending: false })
+      .range(offset, offset + ITEMS_PER_PAGE - 1);
+
+    const { data: posts, error } = await supabaseQuery;
+
+    if (error) {
+      throw error;
+    }
 
     return posts;
   } catch (err) {
@@ -29,17 +32,20 @@ export async function fetchFilteredPosts(query: string, currentPage: number) {
 }
 
 export async function fetchCountPosts(query: string) {
-  try {
-    const result = await prisma.post.count({
-      where: {
-        OR: [
-          { title: { contains: query, mode: "insensitive" } },
-          { body: { contains: query, mode: "insensitive" } },
-        ],
-      },
-    });
+  const supabase = await createClient();
 
-    const totalPages = Math.ceil(result / ITEMS_PER_PAGE);
+  try {
+    // Використовуємо count() для отримання кількості записів
+    const { count, error } = await supabase
+      .from("posts")
+      .select("*", { count: "exact", head: true })
+      .or(`title.ilike.%${query}%,body.ilike.%${query}%`);
+
+    if (error) {
+      throw error;
+    }
+
+    const totalPages = Math.ceil((count || 0) / ITEMS_PER_PAGE);
     return totalPages;
   } catch (error) {
     console.error("Database Error:", error);
@@ -48,12 +54,18 @@ export async function fetchCountPosts(query: string) {
 }
 
 export async function singlePost(slug: string) {
+  const supabase = await createClient();
+
   try {
-    const post = await prisma.post.findUnique({
-      where: {
-        slug,
-      },
-    });
+    const { data: post, error } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("slug", slug)
+      .single(); // Очікуємо один запис
+
+    if (error) {
+      throw error;
+    }
 
     return post;
   } catch (error) {
@@ -62,31 +74,67 @@ export async function singlePost(slug: string) {
   }
 }
 
-export async function relatedPosts(query: string[], slug: string) {
-  if (query.length === 0) return [];
-
-  const q: Prisma.PostWhereInput[] = query.map((item: string) => ({
-    title: { contains: item, mode: "insensitive" },
-  }));
+export async function singleIdPost(id: string) {
+  const supabase = await createClient();
 
   try {
-    const posts = await prisma.post.findMany({
-      select: {
-        title: true,
-        slug: true,
-      },
-      where: {
-        OR: q,
-        NOT: {
-          slug: { equals: slug },
-        },
-      },
-      orderBy: { createdAt: "desc" }, // якщо в моделі поле називається createdAt (але в БД created_at)
-    });
+    const { data: post, error } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("id", id)
+      .single(); // Очікуємо один запис
+
+    if (error) {
+      throw error;
+    }
+
+    return post;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch post.");
+  }
+}
+
+export async function getTags() {
+  const supabase = await createClient();
+
+  try {
+    const { data: tags, error } = await supabase.from("tags").select("*");
+
+    if (error) {
+      throw error;
+    }
+
+    return tags;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch tags.");
+  }
+}
+
+export async function relatedPosts(query: string[], slug: string) {
+  const supabase = await createClient();
+
+  if (query.length === 0) return [];
+
+  try {
+    // Створюємо умову OR для кожного тегу
+    const orConditions = query.map((tag) => `title.ilike.%${tag}%`).join(",");
+
+    const { data: posts, error } = await supabase
+      .from("posts")
+      .select("title, slug")
+      .or(orConditions)
+      .neq("slug", slug) // Виключаємо поточний пост
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
 
     return posts;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch post.");
+    throw new Error("Failed to fetch related posts.");
   }
 }

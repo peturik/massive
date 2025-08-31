@@ -1,5 +1,5 @@
 "use client";
-import type { Post } from "@prisma/client";
+import type { Post } from "@/types/types";
 import Md from "./md";
 import { use } from "react";
 import Link from "next/link";
@@ -25,9 +25,13 @@ export default function AllPosts({
                 <Link href={`blog/${post.slug}`}> {post.title}</Link>
               </h1>
               <span className=" text-xs text-gray-400">
-                {formatDistanceToNow(new Date(post.updatedAt), {
-                  addSuffix: true,
-                })}
+                {post.updated_at != post.created_at
+                  ? `updated at ${formatDistanceToNow(
+                      new Date(post.updated_at)
+                    )}`
+                  : `created at ${formatDistanceToNow(
+                      new Date(post.created_at)
+                    )}`}
               </span>
             </div>
             {role == "admin" && (

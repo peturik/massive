@@ -3,8 +3,7 @@ import { PostSchema } from "./ui/zod";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 const postSchema = PostSchema();
 
@@ -21,15 +20,22 @@ async function handleTags(tagsString: string | undefined) {
       .filter((tag) => tag.length > 0) || [];
 
   if (tagsForm.length > 0) {
-    await Promise.all(
-      tagsForm.map((tag) =>
-        prisma.tag.upsert({
-          where: { title: tag },
-          update: {},
-          create: { title: tag },
-        })
-      )
-    );
+    const supabase = await createClient();
+
+    // Для Supabase нам потрібно вручну перевіряти та створювати теги
+    for (const tag of tagsForm) {
+      // Перевіряємо, чи існує тег
+      const { data: existingTag } = await supabase
+        .from("tags")
+        .select("id")
+        .eq("title", tag)
+        .single();
+
+      // Якщо тег не існує, створюємо його
+      if (!existingTag) {
+        await supabase.from("tags").insert([{ title: tag }]);
+      }
+    }
   }
   return tagsForm;
 }
@@ -49,7 +55,7 @@ async function uploadSupabaseFiles(files: File[], dir: string) {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     const fileExt = file.name.split(".").pop() || "unknown";
     const filename = `${uniqueSuffix}.${fileExt}`;
-    const filePath = `/${uploadDir}/${filename}`;
+    const filePath = `${uploadDir}/${filename}`;
 
     const { error } = await supabase.storage
       .from("uploads")
@@ -111,6 +117,8 @@ export async function createPost(
   formData: FormData,
   userId?: string
 ) {
+  const supabase = await createClient();
+
   try {
     const { title, slug, description, body, tags, image, status } =
       postSchema.parse({
@@ -133,18 +141,25 @@ export async function createPost(
 
     const tagsForm = await handleTags(tags);
 
-    await prisma.post.create({
-      data: {
+    // Створення поста в Supabase
+    const { error } = await supabase.from("posts").insert([
+      {
         title,
         slug,
         description,
         body,
         tags: tagsForm.join(","),
-        imageUrl: imageUrl,
+        image_url: imageUrl,
         status: statusValue,
-        userId: userId,
+        user_id: userId,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       },
-    });
+    ]);
+
+    if (error) {
+      throw new Error(`Supabase error: ${error.message}`);
+    }
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error(error);
@@ -165,6 +180,8 @@ export async function updatePost(
   prevState: string | undefined,
   formData: FormData
 ) {
+  const supabase = await createClient();
+
   try {
     const { id, title, slug, description, body, tags, image, status } =
       postSchema.parse({
@@ -178,16 +195,18 @@ export async function updatePost(
         status: formData.get("status"),
       });
 
-    const post = await prisma.post.findUnique({
-      where: { id },
-      select: { imageUrl: true, slug: true },
-    });
+    // Отримуємо пост з Supabase
+    const { data: post, error: fetchError } = await supabase
+      .from("posts")
+      .select("image_url, slug")
+      .eq("id", id)
+      .single();
 
-    if (!post) {
+    if (fetchError || !post) {
       return "Post not found.";
     }
 
-    let imageUrl = post.imageUrl;
+    let imageUrl = post.image_url;
 
     // Якщо завантажується нове зображення
     if (image instanceof File && image?.size > 0) {
@@ -201,19 +220,24 @@ export async function updatePost(
 
     const tagsForm = await handleTags(tags);
 
-    // Оновлення поста
-    await prisma.post.update({
-      where: { id },
-      data: {
+    // Оновлення поста в Supabase
+    const { error } = await supabase
+      .from("posts")
+      .update({
         title,
         slug,
         description,
         body,
         tags: tagsForm.join(","),
-        imageUrl: imageUrl,
+        image_url: imageUrl,
         status: Number(status),
-      },
-    });
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id);
+
+    if (error) {
+      throw new Error(`Supabase error: ${error.message}`);
+    }
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error(error);
@@ -229,16 +253,21 @@ export async function updatePost(
 }
 
 /* DELETE FROM */
-export async function deletePost(formData: FormData) {
-  const id = formData.get("id") as string;
+export async function deletePost(id: string) {
+  const supabase = await createClient();
+
+  // console.log(id);
+  // return;
 
   try {
-    const post = await prisma.post.findUnique({
-      where: { id },
-      select: { slug: true },
-    });
+    // Отримуємо пост з Supabase
+    const { data: post, error: fetchError } = await supabase
+      .from("posts")
+      .select("slug")
+      .eq("id", id)
+      .single();
 
-    if (!post) {
+    if (fetchError || !post) {
       throw new Error("Post not found");
     }
 
@@ -248,9 +277,11 @@ export async function deletePost(formData: FormData) {
     }
 
     // Видаляємо сам пост з бази даних
-    await prisma.post.delete({
-      where: { id },
-    });
+    const { error } = await supabase.from("posts").delete().eq("id", id);
+
+    if (error) {
+      throw new Error(`Supabase error: ${error.message}`);
+    }
 
     revalidatePath("/dashboard/posts");
     return { success: true };

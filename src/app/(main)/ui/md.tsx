@@ -2,7 +2,7 @@
 import { useThemeStore } from "@/stores/useThemeStore";
 import MDEditor from "@uiw/react-md-editor";
 import { motion } from "motion/react";
-import type { Post } from "@prisma/client";
+import type { Post } from "@/types/types";
 
 export default function Md({
   post,

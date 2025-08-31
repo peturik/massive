@@ -6,7 +6,7 @@ module.exports = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: "2mb",
+      bodySizeLimit: "5mb",
     },
   },
 };

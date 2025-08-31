@@ -6,7 +6,7 @@ import slug from "slug";
 import { Button } from "./button";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { AnimatePresence } from "motion/react";
-import { Tag } from "@prisma/client";
+import type { Tag } from "@/types/types";
 import ModalPost from "./modal-post";
 import MDEditor from "@uiw/react-md-editor";
 import { useThemeStore } from "@/stores/useThemeStore";

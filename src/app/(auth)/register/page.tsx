@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import RegisterForm from "../ui/registerForm";
-import { authUser } from "@/utils/supabase/server";
+import { authUser } from "@/lib/supabase/server";
 
 export default async function Page() {
   const { user } = await authUser();

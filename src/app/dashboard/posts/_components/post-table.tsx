@@ -1,25 +1,24 @@
 import Image from "next/image";
-import type { Post } from "@prisma/client";
+import type { Post } from "@/types/types";
 import { DeletePost, UpdatePost } from "./buttons";
 import { Suspense } from "react";
 import ButtonCheckBox from "./button-checkbox";
 import { formatDistanceToNowStrict } from "date-fns";
-import { prisma } from "@/lib/prisma";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function PostsTable({ posts }: { posts: Post[] }) {
   const changeStatus = async (val: boolean, id: string) => {
     "use server";
-    try {
-      const valNum = val === true ? 1 : 0;
 
-      await prisma.post.update({
-        where: {
-          id: id,
-        },
-        data: {
-          status: valNum,
-        },
-      });
+    const supabase = await createClient();
+
+    try {
+      await supabase
+        .from("posts")
+        .update({
+          status: Number(val),
+        })
+        .eq("id", id);
     } catch (error) {
       console.log(`Error is: ${error}`);
     }
@@ -40,9 +39,9 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                   <div className="flex items-center justify-between border-b pb-4">
                     <div>
                       <div className="mb-2 flex items-center">
-                        {post.imageUrl && (
+                        {post.image_url && (
                           <Image
-                            src={post.imageUrl}
+                            src={post.image_url}
                             className="mr-2 rounded-full"
                             width={40}
                             height={40}
@@ -68,7 +67,7 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                       <Suspense fallback={<h2>Loading...</h2>}>
                         <UpdatePost id={post.id} />
                       </Suspense>
-                      <DeletePost title={post.title} />
+                      <DeletePost title={post.title} id={post.id} />
                     </div>
                   </div>
                 </div>
@@ -119,9 +118,9 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                 >
                   <td className="whitespace-normal py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      {post.imageUrl && (
+                      {post.image_url && (
                         <Image
-                          src={post.imageUrl}
+                          src={post.image_url}
                           className="w-20 h-auto "
                           width={40}
                           height={28}
@@ -142,9 +141,13 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
 
                   <td className="whitespace-normal px-3 py-3">
                     {/* {post.createdAt} */}
-                    {formatDistanceToNowStrict(new Date(post.createdAt), {
-                      addSuffix: true,
-                    })}
+                    {post.updated_at != post.created_at
+                      ? `updated at ${formatDistanceToNowStrict(
+                          new Date(post.updated_at)
+                        )}`
+                      : `created at ${formatDistanceToNowStrict(
+                          new Date(post.created_at)
+                        )}`}
                   </td>
 
                   <td className="whitespace-normal px-3 py-3 text-center">
@@ -158,7 +161,7 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                   <td className="whitespace-normal py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdatePost id={post.id} />
-                      <DeletePost title={post.title} />
+                      <DeletePost title={post.title} id={post.id} />
                     </div>
                   </td>
                 </tr>

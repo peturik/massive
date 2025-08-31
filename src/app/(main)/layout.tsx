@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/app/(main)/ui/header";
 import Footer from "@/app/(main)/ui/footer";
 import "@/app/(main)/style.css";
-import { authUser } from "@/utils/supabase/server";
+import { authUser } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Main Page",

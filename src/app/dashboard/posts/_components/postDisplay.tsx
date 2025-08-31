@@ -1,6 +1,6 @@
 // app/_components/posts-display.tsx
 import { fetchFilteredPosts, fetchCountPosts } from "@/lib/fetchPost";
-import type { Post } from "@prisma/client";
+import type { Post } from "@/types/types";
 import PostsTable from "./post-table";
 import Pagination from "@/app/components/pagination";
 

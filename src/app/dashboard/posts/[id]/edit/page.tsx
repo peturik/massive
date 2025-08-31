@@ -1,8 +1,7 @@
 import EditFormPost from "../../_components/edit-form";
 import Breadcrumbs from "../../_components/breadcrumbs";
-import type { Post, Tag } from "@prisma/client";
 import { Suspense } from "react";
-import { prisma } from "@/lib/prisma";
+import { getTags, singleIdPost } from "@/lib/fetchPost";
 
 export default async function Page({
   params,
@@ -11,11 +10,9 @@ export default async function Page({
 }) {
   const { id } = await params;
 
-  const post = (await prisma.post.findUnique({
-    where: { id },
-  })) as unknown as Post;
+  const post = await singleIdPost(id);
 
-  const tag = (await prisma.tag.findMany()) as unknown as Tag[];
+  const tags = await getTags();
 
   return (
     <main>
@@ -30,7 +27,7 @@ export default async function Page({
         ]}
       />
       <Suspense fallback="...Loading">
-        <EditFormPost post={post} tags={tag} />
+        <EditFormPost post={post} tags={tags} />
       </Suspense>
     </main>
   );

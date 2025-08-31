@@ -1,17 +1,14 @@
 import { Suspense } from "react";
 import AllPosts from "@/app/(main)/ui/AllPosts";
 import Pagination from "@/app/components/pagination";
-import { fetchCountPosts } from "@/lib/fetchPost";
+import { fetchCountPosts, getTags } from "@/lib/fetchPost";
 import "@/app/(main)/style.css";
 import { fetchFilteredPosts } from "@/lib/fetchPost";
-import type { Post } from "@prisma/client";
+import type { Post } from "@/types/types";
 import { Sidebar } from "@/app/(main)/ui/sidebar";
-import { prisma } from "@/lib/prisma";
-import type { Tag } from "@prisma/client";
 import Link from "next/link";
 import Search from "@/app/components/search";
-// import { validateRequest } from "@/lib/auth";
-import { createClient } from "@/utils/supabase/server";
+import { authUser } from "@/lib/supabase/server";
 
 export default async function BlogPage(props: {
   searchParams?: Promise<{
@@ -23,21 +20,10 @@ export default async function BlogPage(props: {
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchCountPosts(query);
-  // const { user } = await validateRequest();
 
-  const supabase = createClient();
-  const data = (await supabase).auth.getUser();
-  const user = (await data).data.user;
+  const { role } = await authUser();
 
-  const profile = (await supabase)
-    .from("profiles")
-    .select("role")
-    .eq("id", user?.id)
-    .single();
-
-  const role: string = (await profile).data?.role;
-
-  const tags = (await prisma.tag.findMany()) as unknown as Tag[];
+  const tags = await getTags();
 
   const posts = fetchFilteredPosts(query, currentPage) as Promise<Post[]>;
 

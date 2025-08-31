@@ -1,8 +1,8 @@
 import React from "react";
-import { prisma } from "@/lib/prisma";
+import { getTags } from "@/lib/fetchPost";
 
 export default async function Page() {
-  const tags = await prisma.tag.findMany();
+  const tags = await getTags();
 
   return (
     <div className="border py-20">

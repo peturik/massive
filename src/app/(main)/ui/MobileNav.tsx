@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { headerNavLinks } from "./headerNavLinks";
 import { Sidebar } from "./sidebar";
-import { Tag } from "@prisma/client";
+import { Tag } from "@/types/types";
 
 const MobileNav = ({ tags }: { tags: Tag[] }) => {
   const [navShow, setNavShow] = useState(false);

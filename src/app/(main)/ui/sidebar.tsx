@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Tag } from "@prisma/client";
+import { Tag } from "@/types/types";
 
 export const Sidebar = ({
   tags,

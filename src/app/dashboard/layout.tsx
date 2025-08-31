@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import SideNav from "./ui/sidenav";
 import TopMenu from "./ui/top-menu";
 import { redirect } from "next/navigation";
-import { authUser } from "@/utils/supabase/server";
+import { authUser } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Admin panel",

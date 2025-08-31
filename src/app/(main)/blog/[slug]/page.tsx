@@ -1,12 +1,12 @@
 import { Suspense } from "react";
-import type { Post } from "@prisma/client";
+import type { Post } from "@/types/types";
 import { relatedPosts, singlePost } from "@/lib/fetchPost";
 import Md from "@/app/(main)/ui/md";
 import { redirect } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { authUser } from "@/utils/supabase/server";
+import { authUser } from "@/lib/supabase/server";
 
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
@@ -37,21 +37,15 @@ export default async function Page(props: {
           <div className="my-10">
             <div className="text-4xl font-bold">{post.title}</div>
             <div className="pl-2  text-gray-500">
-              {post.createdAt.toString() === post.updatedAt.toString() ? (
-                <div className="text-sm text-gray-600">
-                  <span className=" text-gray-400">created at: </span>
-                  {formatDistanceToNow(new Date(post.createdAt), {
-                    addSuffix: true,
-                  })}
-                </div>
-              ) : (
-                <div className="text-sm text-gray-600">
-                  <span className=" text-gray-400">updated at: </span>
-                  {formatDistanceToNow(new Date(post.updatedAt), {
-                    addSuffix: true,
-                  })}
-                </div>
-              )}
+              <span className=" text-xs text-gray-400">
+                {post.updated_at != post.created_at
+                  ? `updated at ${formatDistanceToNow(
+                      new Date(post.updated_at)
+                    )}`
+                  : `created at ${formatDistanceToNow(
+                      new Date(post.created_at)
+                    )}`}
+              </span>
               <div>
                 {role === "admin" && (
                   <Link
@@ -87,9 +81,9 @@ export default async function Page(props: {
         <div className="flex gap-8 pt-2 md:pt-10 pb-10">
           <div className="sm:basis-3/12 sm:block hidden ">
             <div className="">
-              {post.imageUrl && (
+              {post.image_url && (
                 <Image
-                  src={post?.imageUrl}
+                  src={post?.image_url}
                   width={500}
                   height={500}
                   alt="Picture of the author"

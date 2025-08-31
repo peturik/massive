@@ -1,6 +1,8 @@
-import { supabase } from "@/utils/supabase/supabaseClient";
+import { createClient } from "./supabase/server";
 
 export async function saveFiles(files: File[], dir: string) {
+  const supabase = await createClient();
+
   const relativeUploadDir = `/${dir}`; // Базовий шлях із вкладеними теками
   const arrFiles: string[] = [];
 
