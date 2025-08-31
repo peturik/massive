@@ -4,6 +4,7 @@ import Link from "next/link";
 
 export default async function Page() {
   const tags = await getTags();
+  console.log(tags);
 
   return (
     <>
