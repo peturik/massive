@@ -66,7 +66,7 @@ async function uploadSupabaseFiles(files: File[], dir: string) {
     const filePath = `${uploadDir}/${filename}`;
 
     const { error } = await supabase.storage
-      .from("images")
+      .from("uploads")
       .upload(filePath, file, {
         contentType: file.type,
         upsert: false,
@@ -78,7 +78,7 @@ async function uploadSupabaseFiles(files: File[], dir: string) {
     }
 
     const { data: publicUrlData } = supabase.storage
-      .from("images")
+      .from("uploads")
       .getPublicUrl(filePath);
 
     arrFiles.push(publicUrlData.publicUrl);
@@ -93,7 +93,7 @@ async function uploadSupabaseFiles(files: File[], dir: string) {
 async function deleteSupabaseFolder(dirPath: string) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.storage.from("images").list(dirPath);
+  const { data, error } = await supabase.storage.from("uploads").list(dirPath);
 
   if (error) {
     console.error(`Error listing files in folder ${dirPath}:`, error.message);
@@ -103,13 +103,13 @@ async function deleteSupabaseFolder(dirPath: string) {
   if (data && data.length > 0) {
     const filePaths = data.map((file) => `${dirPath}/${file.name}`);
     const { error: removeError } = await supabase.storage
-      .from("images")
+      .from("uploads")
       .remove(filePaths);
 
     if (removeError) {
       console.error(
         `Error removing files from folder ${dirPath}:`,
-        removeError.message,
+        removeError.message
       );
       throw new Error(`Failed to remove files: ${removeError.message}`);
     }
@@ -143,7 +143,7 @@ function getFilesFromFormData(formData: FormData, fieldName: string): File[] {
 export async function createPost(
   prevState: string | undefined,
   formData: FormData,
-  userId?: string,
+  userId?: string
 ) {
   const supabase = await createClient();
 
@@ -223,7 +223,7 @@ export async function createPost(
 /* UPDATE POST */
 export async function updatePost(
   prevState: string | undefined,
-  formData: FormData,
+  formData: FormData
 ) {
   const supabase = await createClient();
 
@@ -263,7 +263,7 @@ export async function updatePost(
     // Обробка галереї
     if (galleryFiles.length > 0) {
       galleryUrl.push(
-        ...(await uploadSupabaseFiles(galleryFiles, `${slug}/gallery`)),
+        ...(await uploadSupabaseFiles(galleryFiles, `${slug}/gallery`))
       );
     }
 
@@ -273,15 +273,15 @@ export async function updatePost(
       if (post.image_url && post.slug) {
         // Отримуємо список файлів у теці поста
         const { data: folderFiles } = await supabase.storage
-          .from("images")
+          .from("uploads")
           .list(post.slug);
 
         // Видаляємо всі файли з теки поста (основне зображення)
         if (folderFiles && folderFiles.length > 0) {
           const filePaths = folderFiles.map(
-            (file) => `${post.slug}/${file.name}`,
+            (file) => `${post.slug}/${file.name}`
           );
-          await supabase.storage.from("images").remove(filePaths);
+          await supabase.storage.from("uploads").remove(filePaths);
         }
       }
       // Завантажуємо нове зображення
