@@ -1,5 +1,5 @@
 "use client";
-import { deletePost } from "@/app/dashboard/posts/utils/actions";
+import { deletePost } from "../../actions";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import styles from "../style.module.css";
@@ -38,8 +38,8 @@ export function DeletePost({ title, id }: { title: string; id: string }) {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDeletePost = async (formData: FormData) => {
-    await deletePost(formData);
+  const handleDeletePost = async () => {
+    await deletePost(id);
     closeModal();
   };
   return (
@@ -63,12 +63,11 @@ export function DeletePost({ title, id }: { title: string; id: string }) {
         <h3 className=" text-center text-green-700">&quot;{title}&quot;</h3>
         <button
           onClick={closeModal}
-          className=" w-full my-2 rounded-md border p-2 hover:bg-gray-600"
+          className=" w-full my-2 rounded-md border p-2 hover:bg-gray-200"
         >
           close
         </button>
         <form action={handleDeletePost}>
-          <input type="hidden" name="id" value={id} />
           <button className="w-full rounded-md border p-2 bg-red-300 hover:bg-red-400 hover:text-white">
             Delete
           </button>

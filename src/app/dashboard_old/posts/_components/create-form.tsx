@@ -1,69 +1,69 @@
-// components/edit-form.tsx
 "use client";
+import { createPost } from "../../actions";
 import Link from "next/link";
-import { useActionState, useId, useState } from "react";
+import { useState, useActionState, useId } from "react";
 import slug from "slug";
 import { Button } from "./button";
-import type { Post, Tag } from "../utils/types";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { AnimatePresence } from "motion/react";
+import type { Tag } from "@/types/types";
+import ModalPost from "./modal-post";
 import MDEditor from "@uiw/react-md-editor";
+import { useThemeStore } from "@/stores/useThemeStore";
 import ButtonCheckBox from "./button-checkbox";
-import { updatePost } from "../utils/actions";
-import { ImageGallery } from "./image-gallery";
-import { MainImage } from "./main-image";
-import { Input } from "@/components/ui/input";
-import { MultiTagSelect } from "./multi-tag-select";
 
-type Props = {
-  post: Post;
-  tags: Tag[];
-};
-
-export default function EditFormPost({ post, tags }: Props) {
-  const [title, setTitle] = useState(post.title);
-  const [status, setStatus] = useState<number>(post.status);
-  const [gallery, setGallery] = useState(
-    post.gallery ? JSON.parse(post.gallery) : [],
-  );
-
-  const [selectedOption, setSelectedOption] = useState<string[]>(
-    post.tags ? post.tags.split(",") : [],
-  );
-  const [valueDesc, setValueDesc] = useState<string | undefined>(
-    post.description,
-  );
-  const [valueBody, setValueBody] = useState<string | undefined>(post.body);
-  const [slugTitle, setSlugTitle] = useState(post.slug);
-
+export default function CreateFormPost({ tags }: { tags: Tag[] }) {
+  const [title, setTitle] = useState("");
+  const [selectedOption, setSelectedOption] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [val, setVal] = useState("");
+  const [valueDesc, setValueDesc] = useState("");
+  const [valueBody, setValueBody] = useState("");
+  const [status, setStatus] = useState(1);
+  const [slugTitle, setSlugTitle] = useState("");
   const idTitle = useId();
   const idSlug = useId();
   const idDesription = useId();
   const idBody = useId();
+  const idSelect = useId();
   const idStatus = useId();
+  const idImage = useId();
+  const idGallery = useId();
+
+  const theme = useThemeStore((state) => state.theme);
 
   const changeStatus = (val: boolean) => {
     setStatus(val ? 1 : 0);
   };
 
   const [errorMessage, formAction, isPending] = useActionState(
-    updatePost,
-    undefined,
+    createPost,
+    undefined
   );
+
+  function handler(evalue: string) {
+    if (selectedOption.includes(evalue)) {
+      const arr = selectedOption.filter((item) => item !== evalue);
+      setSelectedOption(arr);
+    } else {
+      const arr = [...selectedOption, evalue];
+      setSelectedOption(arr.filter((item) => item !== ""));
+      if (!evalue.length) setIsOpen(true);
+    }
+  }
 
   return (
     <div>
       <form action={formAction}>
-        <div className="">
-          <input id="id" name="id" type="hidden" value={post.id} />
-
+        <div className="rounded-md bg-gray-50 dark:bg-gray-700 dark:text-gray-300 p-4 md:p-6">
           {/* Title */}
-          <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
-            <label htmlFor={idTitle} className="mb-2 block text-sm font-medium">
+          <div className="mb-4">
+            <label htmlFor="title" className="mb-2 block text-sm font-medium">
               Title
             </label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <Input
+                <input
                   id={idTitle}
                   name="title"
                   type="text"
@@ -73,7 +73,7 @@ export default function EditFormPost({ post, tags }: Props) {
                     setTitle(e.target.value);
                   }}
                   placeholder="Enter title"
-                  className="border border-blue-400 rounded-md p-2"
+                  className="input-style"
                   required
                   minLength={5}
                 />
@@ -82,20 +82,20 @@ export default function EditFormPost({ post, tags }: Props) {
           </div>
 
           {/* slug */}
-          <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
-            <label htmlFor={idSlug} className="mb-2 block text-sm font-medium">
+          <div className="mb-4">
+            <label htmlFor="slug" className="mb-2 block text-sm font-medium">
               Slug
             </label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <Input
+                <input
                   id={idSlug}
                   name="slug"
                   type="text"
                   placeholder="Enter slug"
                   value={slugTitle}
                   onChange={(e) => setSlugTitle(slug(e.target.value))}
-                  className="border border-blue-400 rounded-md p-2"
+                  className="input-style"
                   required
                 />
               </div>
@@ -104,24 +104,19 @@ export default function EditFormPost({ post, tags }: Props) {
 
           {/* Description */}
           <div className="mb-4">
-            <label
-              htmlFor={idDesription}
-              className="mb-2 block text-sm font-medium"
-            >
+            <label htmlFor="body" className="mb-2 block text-sm font-medium">
               Description
             </label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <div className="mb-4">
+                <div className="mb-4" data-color-mode={theme}>
                   <MDEditor
                     value={valueDesc}
-                    onChange={setValueDesc}
                     height={300}
-                    textareaProps={{
-                      placeholder: "Please enter Markdown text",
-                    }}
+                    onChange={(e) => setValueDesc(e || "")}
                   />
                 </div>
+
                 <textarea
                   id={idDesription}
                   name="description"
@@ -136,19 +131,16 @@ export default function EditFormPost({ post, tags }: Props) {
 
           {/* Body */}
           <div className="mb-4">
-            <label htmlFor={idBody} className="mb-2 block text-sm font-medium">
+            <label htmlFor="body" className="mb-2 block text-sm font-medium">
               Body
             </label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <div className="mb-4">
+                <div className="mb-4" data-color-mode={theme}>
                   <MDEditor
                     value={valueBody}
-                    onChange={setValueBody}
                     height={500}
-                    textareaProps={{
-                      placeholder: "Please enter Markdown text",
-                    }}
+                    onChange={(e) => setValueBody(e || "")}
                   />
                 </div>
 
@@ -165,45 +157,68 @@ export default function EditFormPost({ post, tags }: Props) {
           </div>
 
           {/* Select */}
-          <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
-            <div>Tags</div>
+
+          <div className="mb-4">
+            <label htmlFor="select" className="bm-2 block text-sm font-medium">
+              {selectedOption.length
+                ? "Selected tags is:"
+                : "Select 1 or 2 tags"}
+            </label>
             <div className="relative mt-2 rounded-md">
+              <div className="pb-2">{`${selectedOption} `}</div>
               <div className="relative">
-                <MultiTagSelect
-                  tag={tags}
-                  setValue={setSelectedOption}
-                  existingTags={post.tags}
-                />
-                <input type="hidden" name="tags" value={selectedOption} />
+                <select
+                  name="select"
+                  id={idSelect}
+                  className="input-style"
+                  onChange={(e) => handler(e.target.value)}
+                  value={"selectTag"}
+                >
+                  <option value="selectTag">Select tags</option>
+
+                  {tags.map((tag: Tag) => (
+                    <option key={tag.id} value={tag.title}>
+                      {tag.title}
+                    </option>
+                  ))}
+                  <option value="">Add new tag</option>
+                </select>
               </div>
             </div>
           </div>
 
-          {/* main image */}
+          <input type="hidden" name="tags" value={selectedOption} />
 
-          <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
-            <div>Image</div>
+          {/* main image */}
+          <div className="mb-4">
+            <label htmlFor="image">Image</label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <MainImage
-                  maxSize={5}
-                  existingImage={post.image_url ? post.image_url : ""}
+                <input
+                  id={idImage}
+                  name="image"
+                  defaultValue={""}
+                  placeholder="Select image"
+                  type="file"
+                  className="input-style"
                 />
               </div>
             </div>
           </div>
 
           {/* gallery */}
-          <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
-            <div>Gallery</div>
+          <div className="mb-4">
+            <label htmlFor="image">Gallery</label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <ImageGallery
-                  postSlug={post.slug}
-                  onImagesChange={setGallery}
-                  existingImages={gallery}
-                  maxImages={10}
-                  maxSize={5}
+                <input
+                  id={idGallery}
+                  name="gallery"
+                  defaultValue={""}
+                  placeholder="Select images"
+                  type="file"
+                  multiple
+                  className="input-style"
                 />
               </div>
             </div>
@@ -214,10 +229,7 @@ export default function EditFormPost({ post, tags }: Props) {
             <div className="relative mt-2 rounded-md">
               <div className="relative">
                 <span>Status</span>
-                <ButtonCheckBox
-                  status={post.status}
-                  changeStatus={changeStatus}
-                />
+                <ButtonCheckBox status={status} changeStatus={changeStatus} />
                 <input
                   id={idStatus}
                   name="status"
@@ -225,12 +237,12 @@ export default function EditFormPost({ post, tags }: Props) {
                   value={status}
                   readOnly
                   hidden
+                  // defaultChecked
                 />
               </div>
             </div>
           </div>
-
-          {errorMessage && typeof errorMessage !== typeof NaN && (
+          {errorMessage && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
               <p className="text-sm text-red-500">{errorMessage}</p>
@@ -248,11 +260,26 @@ export default function EditFormPost({ post, tags }: Props) {
               type="submit"
               aria-disabled={isPending}
             >
-              Update Post
+              Create Post
             </Button>
           </div>
         </div>
       </form>
+
+      {/* modal motion */}
+      <div className="flex justify-center items-center">
+        <AnimatePresence>
+          {isOpen && (
+            <ModalPost
+              onClose={() => setIsOpen(false)}
+              title="Add new tag"
+              handler={handler}
+              val={val}
+              setVal={setVal}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

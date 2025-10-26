@@ -1,10 +1,8 @@
 // app/_components/posts-display.tsx
-import {
-  fetchFilteredPosts,
-  fetchCountPosts,
-} from "@/app/dashboard/posts/utils/fetchPost";
+import { fetchFilteredPosts, fetchCountPosts } from "@/lib/fetchPost";
+import type { Post } from "@/types/types";
 import PostsTable from "./post-table";
-import Pagination from "@/app/dashboard/ui/pagination";
+import Pagination from "@/app/components/pagination";
 
 export default async function PostsDisplay({
   query,
@@ -13,7 +11,10 @@ export default async function PostsDisplay({
   query: string;
   currentPage: number;
 }) {
-  const posts = await fetchFilteredPosts(query, currentPage);
+  const posts = (await fetchFilteredPosts(
+    query,
+    currentPage
+  )) as unknown as Post[];
   const totalPages = await fetchCountPosts(query);
 
   return (

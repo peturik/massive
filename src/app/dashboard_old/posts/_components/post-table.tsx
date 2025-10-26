@@ -1,7 +1,7 @@
 import Image from "next/image";
-import type { Post } from "../utils/types";
-
+import type { Post } from "@/types/types";
 import { DeletePost, UpdatePost } from "./buttons";
+import { Suspense } from "react";
 import ButtonCheckBox from "./button-checkbox";
 import { formatDistanceToNowStrict } from "date-fns";
 import { createClient } from "@/lib/supabase/server";
@@ -9,18 +9,16 @@ import { createClient } from "@/lib/supabase/server";
 export default async function PostsTable({ posts }: { posts: Post[] }) {
   const changeStatus = async (val: boolean, id: string) => {
     "use server";
+
     const supabase = await createClient();
+
     try {
-      const valNum = val === true ? 1 : 0;
-
-      const { error } = await supabase
+      await supabase
         .from("posts")
-        .update({ status: valNum })
+        .update({
+          status: Number(val),
+        })
         .eq("id", id);
-
-      if (error) {
-        throw new Error(`Supabase error: ${error.message}`);
-      }
     } catch (error) {
       console.log(`Error is: ${error}`);
     }
@@ -29,14 +27,14 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg  dark:text-gray-300 md:pt-0">
+        <div className="rounded-lg bg-gray-50  dark:bg-gray-700 dark:text-gray-300 p-2 md:pt-0">
           {/* mobile */}
           <div className="md:hidden">
             {posts?.map((post: Post) => {
               return (
                 <div
                   key={post.id}
-                  className="mb-2 w-full rounded-md bg-[#e5e7eb] my-4 dark:bg-gray-700 dark:text-gray-300 p-4"
+                  className="mb-2 w-full rounded-md bg-white dark:bg-gray-700 dark:text-gray-300 p-4"
                 >
                   <div className="flex items-center justify-between border-b pb-4">
                     <div>
@@ -44,11 +42,11 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                         {post.image_url && (
                           <Image
                             src={post.image_url}
-                            className="mr-2 "
+                            className="mr-2 rounded-full"
                             width={40}
                             height={40}
                             alt="image"
-                            style={{ width: "40", height: "auto" }}
+                            style={{ width: "20%", height: "auto" }}
                           />
                         )}
 
@@ -56,11 +54,7 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                       </div>
                       <p className="text-sm text-gray-500">{post.slug}</p>
                     </div>
-                    <ButtonCheckBox
-                      status={post.status}
-                      changeStatus={changeStatus}
-                      postId={post.id}
-                    />
+                    {post.status}
                   </div>
 
                   <div className="flex w-full items-center justify-between pt-4">
@@ -70,7 +64,9 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                       </p>
                     </div>
                     <div className="flex justify-end gap-2">
-                      <UpdatePost id={post.id} />
+                      <Suspense fallback={<h2>Loading...</h2>}>
+                        <UpdatePost id={post.id} />
+                      </Suspense>
                       <DeletePost title={post.title} id={post.id} />
                     </div>
                   </div>
@@ -126,8 +122,8 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                         <Image
                           src={post.image_url}
                           className="w-20 h-auto "
-                          width={250}
-                          height={125}
+                          width={40}
+                          height={28}
                           alt="image"
                         />
                       )}
@@ -144,11 +140,14 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                   <td className="whitespace-normal px-3 py-3 ">{post.tags}</td>
 
                   <td className="whitespace-normal px-3 py-3">
-                    {/* {post.updated_at} */}
-                    {post.updated_at &&
-                      formatDistanceToNowStrict(new Date(post.created_at), {
-                        addSuffix: true,
-                      })}
+                    {/* {post.createdAt} */}
+                    {post.updated_at != post.created_at
+                      ? `updated at ${formatDistanceToNowStrict(
+                          new Date(post.updated_at)
+                        )}`
+                      : `created at ${formatDistanceToNowStrict(
+                          new Date(post.created_at)
+                        )}`}
                   </td>
 
                   <td className="whitespace-normal px-3 py-3 text-center">

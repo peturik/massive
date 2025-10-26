@@ -32,7 +32,7 @@ export default async function Page(props: {
 
   return (
     <div>
-      <div className="min-h-screen pb-8 font-[family-name:var(--font-geist-sans)] ">
+      <div className=" area min-h-screen pb-8 font-[family-name:var(--font-geist-sans)] ">
         <div className="border-b-2 flex justify-center border-gray-600">
           <div className="my-10">
             <div className="text-4xl font-bold">{post.title}</div>

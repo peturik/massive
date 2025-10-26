@@ -1,28 +1,33 @@
+// components/create-form.tsx
 "use client";
-import { createPost } from "../../actions";
+import { createPost } from "../utils/actions";
 import Link from "next/link";
-import { useState, useActionState } from "react";
+import { useState, useActionState, useId } from "react";
 import slug from "slug";
 import { Button } from "./button";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import { AnimatePresence } from "motion/react";
-import type { Tag } from "@/types/types";
-import ModalPost from "./modal-post";
+import type { Tag } from "../utils/types";
 import MDEditor from "@uiw/react-md-editor";
-import { useThemeStore } from "@/stores/useThemeStore";
 import ButtonCheckBox from "./button-checkbox";
+import { ImageGallery } from "./image-gallery";
+import { MainImage } from "./main-image";
+import { Input } from "@/components/ui/input";
+import { MultiTagSelect } from "./multi-tag-select";
 
 export default function CreateFormPost({ tags }: { tags: Tag[] }) {
   const [title, setTitle] = useState("");
   const [selectedOption, setSelectedOption] = useState<string[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [val, setVal] = useState("");
   const [valueDesc, setValueDesc] = useState("");
   const [valueBody, setValueBody] = useState("");
   const [status, setStatus] = useState(1);
   const [slugTitle, setSlugTitle] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
 
-  const theme = useThemeStore((state) => state.theme);
+  const idTitle = useId();
+  const idSlug = useId();
+  const idDesription = useId();
+  const idBody = useId();
+  const idStatus = useId();
 
   const changeStatus = (val: boolean) => {
     setStatus(val ? 1 : 0);
@@ -30,33 +35,22 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
 
   const [errorMessage, formAction, isPending] = useActionState(
     createPost,
-    undefined
+    undefined,
   );
-
-  function handler(evalue: string) {
-    if (selectedOption.includes(evalue)) {
-      const arr = selectedOption.filter((item) => item !== evalue);
-      setSelectedOption(arr);
-    } else {
-      const arr = [...selectedOption, evalue];
-      setSelectedOption(arr.filter((item) => item !== ""));
-      if (!evalue.length) setIsOpen(true);
-    }
-  }
 
   return (
     <div>
       <form action={formAction}>
-        <div className="rounded-md bg-gray-50 dark:bg-gray-700 dark:text-gray-300 p-4 md:p-6">
+        <div className="">
           {/* Title */}
-          <div className="mb-4">
-            <label htmlFor="title" className="mb-2 block text-sm font-medium">
+          <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
+            <label htmlFor={idTitle} className="mb-2 block text-sm font-medium">
               Title
             </label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <input
-                  id="title"
+                <Input
+                  id={idTitle}
                   name="title"
                   type="text"
                   defaultValue={title}
@@ -65,7 +59,7 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
                     setTitle(e.target.value);
                   }}
                   placeholder="Enter title"
-                  className="input-style"
+                  className="border border-blue-400 rounded-md p-2"
                   required
                   minLength={5}
                 />
@@ -74,20 +68,20 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
           </div>
 
           {/* slug */}
-          <div className="mb-4">
-            <label htmlFor="slug" className="mb-2 block text-sm font-medium">
+          <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
+            <label htmlFor={idSlug} className="mb-2 block text-sm font-medium">
               Slug
             </label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <input
-                  id="slug"
+                <Input
+                  id={idSlug}
                   name="slug"
                   type="text"
                   placeholder="Enter slug"
                   value={slugTitle}
                   onChange={(e) => setSlugTitle(slug(e.target.value))}
-                  className="input-style"
+                  className="border border-blue-400 rounded-md p-2"
                   required
                 />
               </div>
@@ -96,12 +90,15 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
 
           {/* Description */}
           <div className="mb-4">
-            <label htmlFor="body" className="mb-2 block text-sm font-medium">
+            <label
+              htmlFor={idDesription}
+              className="mb-2 block text-sm font-medium"
+            >
               Description
             </label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <div className="mb-4" data-color-mode={theme}>
+                <div className="mb-4">
                   <MDEditor
                     value={valueDesc}
                     height={300}
@@ -110,7 +107,7 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
                 </div>
 
                 <textarea
-                  id="description"
+                  id={idDesription}
                   name="description"
                   value={valueDesc}
                   readOnly
@@ -123,12 +120,12 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
 
           {/* Body */}
           <div className="mb-4">
-            <label htmlFor="body" className="mb-2 block text-sm font-medium">
+            <label htmlFor={idBody} className="mb-2 block text-sm font-medium">
               Body
             </label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <div className="mb-4" data-color-mode={theme}>
+                <div className="mb-4">
                   <MDEditor
                     value={valueBody}
                     height={500}
@@ -137,7 +134,7 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
                 </div>
 
                 <textarea
-                  id="body"
+                  id={idBody}
                   name="body"
                   value={valueBody}
                   readOnly
@@ -149,49 +146,37 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
           </div>
 
           {/* Select */}
-
-          <div className="mb-4">
-            <label htmlFor="select" className="bm-2 block text-sm font-medium">
-              {selectedOption.length
-                ? "Selected tags is:"
-                : "Select 1 or 2 tags"}
-            </label>
+          <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
+            <div>Tags</div>
             <div className="relative mt-2 rounded-md">
-              <div className="pb-2">{`${selectedOption} `}</div>
               <div className="relative">
-                <select
-                  name="select"
-                  id="select"
-                  className="input-style"
-                  onChange={(e) => handler(e.target.value)}
-                  value={"selectTag"}
-                >
-                  <option value="selectTag">Select tags</option>
-
-                  {tags.map((tag: Tag) => (
-                    <option key={tag.id} value={tag.title}>
-                      {tag.title}
-                    </option>
-                  ))}
-                  <option value="">Add new tag</option>
-                </select>
+                <MultiTagSelect tag={tags} setValue={setSelectedOption} />
+                <input type="hidden" name="tags" value={selectedOption} />
               </div>
             </div>
           </div>
 
-          <input type="hidden" name="tags" value={selectedOption} />
-
           {/* main image */}
-          <div className="mb-4">
-            <label htmlFor="image">Image</label>
+          <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
+            <div>Image</div>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <input
-                  id="image"
-                  name="image"
-                  defaultValue={""}
-                  placeholder="Enter your text"
-                  type="file"
+                <MainImage maxSize={5} />
+              </div>
+            </div>
+          </div>
+
+          {/* gallery */}
+          <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
+            <div>Gallery</div>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <ImageGallery
+                  postSlug=""
+                  onImagesChange={setGallery}
+                  existingImages={gallery}
+                  maxImages={10}
+                  maxSize={5}
                 />
               </div>
             </div>
@@ -204,17 +189,17 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
                 <span>Status</span>
                 <ButtonCheckBox status={status} changeStatus={changeStatus} />
                 <input
-                  id="status"
+                  id={idStatus}
                   name="status"
                   type="text"
                   value={status}
                   readOnly
                   hidden
-                  // defaultChecked
                 />
               </div>
             </div>
           </div>
+
           {errorMessage && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
@@ -238,21 +223,6 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
           </div>
         </div>
       </form>
-
-      {/* modal motion */}
-      <div className="flex justify-center items-center">
-        <AnimatePresence>
-          {isOpen && (
-            <ModalPost
-              onClose={() => setIsOpen(false)}
-              title="Add new tag"
-              handler={handler}
-              val={val}
-              setVal={setVal}
-            />
-          )}
-        </AnimatePresence>
-      </div>
     </div>
   );
 }

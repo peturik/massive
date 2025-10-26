@@ -1,7 +1,7 @@
 import EditFormPost from "../../_components/edit-form";
 import Breadcrumbs from "../../_components/breadcrumbs";
 import { Suspense } from "react";
-import { getPostAndTags } from "../../utils/actions";
+import { getTags, singleIdPost } from "@/lib/fetchPost";
 
 export default async function Page({
   params,
@@ -9,7 +9,10 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const { post, tags } = await getPostAndTags(id);
+
+  const post = await singleIdPost(id);
+
+  const tags = await getTags();
 
   return (
     <main>

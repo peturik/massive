@@ -1,4 +1,4 @@
-import Search from "../ui/search";
+import Search from "@/app/components/search";
 import { CreatePost } from "./_components/buttons";
 import { Suspense } from "react";
 import PostsDisplay from "./_components/postDisplay";
@@ -20,7 +20,7 @@ export default async function Page(props: {
           <h1 className={`text-2xl`}>Posts</h1>
         </div>
         <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-          <Search placeholder="Search posts..." />
+          <Search />
           <CreatePost />
         </div>
 
