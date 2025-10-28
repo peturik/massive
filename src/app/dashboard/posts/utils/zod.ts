@@ -14,7 +14,9 @@ export function PostSchema() {
     description: z
       .string()
       .min(10, { message: "Description must be at least 10 characters long" })
-      .max(500, { message: "Description must be at most 500 characters long" }),
+      .max(1000, {
+        message: "Description must be at most 1000 characters long",
+      }),
     body: z
       .string()
       .min(10, { message: "Body must be at least 10 characters long" }),
