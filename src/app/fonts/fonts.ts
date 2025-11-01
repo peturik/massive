@@ -1,4 +1,10 @@
-import { Inter, Lusitana, Alegreya, Danfo } from "next/font/google";
+import {
+  Inter,
+  Merriweather,
+  Lusitana,
+  Alegreya,
+  Danfo,
+} from "next/font/google";
 
 export const inter = Inter({
   subsets: ["latin"],
@@ -17,12 +23,18 @@ export const alegreya = Alegreya({
   subsets: ["latin"],
   // weight: ["500"],
   variable: "--font-alegreya",
-  display: "swap",
+  // display: "swap",
 });
 
 export const danfo = Danfo({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-danfo",
+  display: "swap",
+});
+
+export const merriweather = Merriweather({
+  subsets: ["latin"],
+  variable: "--font-merriweather",
   display: "swap",
 });

@@ -35,15 +35,15 @@ export default async function Page(props: {
       <div className=" area min-h-screen pb-8 font-[family-name:var(--font-geist-sans)] ">
         <div className="border-b-2 flex justify-center border-gray-600">
           <div className="my-10">
-            <div className="text-4xl font-bold">{post.title}</div>
+            <div className="font-alegreya text-4xl font-bold">{post.title}</div>
             <div className="pl-2  text-gray-500">
               <span className=" text-xs text-gray-400">
                 {post.updated_at != post.created_at
                   ? `updated at ${formatDistanceToNow(
-                      new Date(post.updated_at)
+                      new Date(post.updated_at),
                     )}`
                   : `created at ${formatDistanceToNow(
-                      new Date(post.created_at)
+                      new Date(post.created_at),
                     )}`}
               </span>
               <div>

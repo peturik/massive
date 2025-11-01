@@ -19,18 +19,18 @@ export default function AllPosts({
       {allPosts?.map((post: Post) => {
         if (!post.status) return null;
         return (
-          <div className="mb-12 pt-6 w-fill" key={post.id}>
+          <div className="font-alegreya mb-12 pt-6 w-fill" key={post.id}>
             <div>
-              <h1>
+              <h1 className="text-4xl font-bold">
                 <Link href={`blog/${post.slug}`}> {post.title}</Link>
               </h1>
               <span className=" text-xs text-gray-400">
                 {post.updated_at != post.created_at
                   ? `updated at ${formatDistanceToNow(
-                      new Date(post.updated_at)
+                      new Date(post.updated_at),
                     )}`
                   : `created at ${formatDistanceToNow(
-                      new Date(post.created_at)
+                      new Date(post.created_at),
                     )}`}
               </span>
             </div>

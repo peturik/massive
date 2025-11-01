@@ -29,7 +29,7 @@ export default async function BlogPage(props: {
 
   return (
     <main>
-      <div className="min-h-screen pb-8 font-[family-name:var(--font-geist-sans)] ">
+      <div className="min-h-screen pb-8  ">
         <div className="md:border-b-2  border-gray-600">
           <div className="md:flex block justify-between my-10">
             <div className="font-bold text-4xl">

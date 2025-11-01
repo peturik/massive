@@ -3,6 +3,7 @@ import Header from "@/app/(main)/ui/header";
 import Footer from "@/app/(main)/ui/footer";
 import "@/app/(main)/style.css";
 import { authUser } from "@/lib/supabase/server";
+import { merriweather } from "../fonts/fonts";
 
 export const metadata: Metadata = {
   title: "Main Page",
@@ -21,7 +22,7 @@ export default async function AppLayout({
       <div className="">
         <Header />
       </div>
-      <div className="md:p-6 p-2">{children}</div>
+      <div className={`${merriweather.className} md:p-6 p-2`}>{children}</div>
       <Footer user={user?.email} />
     </div>
   );
