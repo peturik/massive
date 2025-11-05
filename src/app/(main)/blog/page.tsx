@@ -9,6 +9,12 @@ import { Sidebar } from "@/app/(main)/ui/sidebar";
 import Link from "next/link";
 import Search from "@/app/components/search";
 import { authUser } from "@/lib/supabase/server";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Massive - Main Page",
+  description: "Linux and administration blog",
+};
 
 export default async function BlogPage(props: {
   searchParams?: Promise<{

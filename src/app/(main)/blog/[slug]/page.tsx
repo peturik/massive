@@ -2,24 +2,36 @@ import { Suspense } from "react";
 import type { Post } from "@/types/types";
 import { relatedPosts, singlePost } from "@/lib/fetchPost";
 import Md from "@/app/(main)/ui/md";
-import { redirect } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { authUser } from "@/lib/supabase/server";
+import type { Metadata, ResolvingMetadata } from "next";
 
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const slug = (await params).slug;
+  console.log(await parent);
+  // fetch post information
+
+  const post = (await singlePost(slug)) as Post;
+
+  return {
+    title: post.title,
+    description: post.description,
+  };
+}
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ query?: string; page?: string }>;
 }) {
-  const searchParams = await props.searchParams;
-  const query = searchParams?.query || "";
-
   const { role } = await authUser();
-
-  if (query.length) {
-    return redirect("/");
-  }
 
   const { slug } = await props.params;
   const post = (await singlePost(slug)) as Post;
