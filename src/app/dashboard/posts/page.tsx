@@ -3,6 +3,12 @@ import { CreatePost } from "./_components/buttons";
 import { Suspense } from "react";
 import PostsDisplay from "./_components/postDisplay";
 import Breadcrumbs from "./_components/breadcrumbs";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard - Posts",
+  description: "Dashboard - Posts",
+};
 
 export default async function Page(props: {
   searchParams?: Promise<{

@@ -3,6 +3,20 @@ import { Suspense } from "react";
 import { getPostAndTags } from "../utils/actions";
 import Md from "../utils/md";
 import Link from "next/link";
+import { Metadata } from "next";
+
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const { post } = await getPostAndTags(id);
+  return {
+    title: post.title,
+    description: post.description,
+  };
+}
 
 export default async function SinglePost({
   params,
