@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const { post } = await getPostAndTags(id);
   return {
-    title: post.title,
+    title: `Massive | ${post.title}`,
     description: post.description,
   };
 }

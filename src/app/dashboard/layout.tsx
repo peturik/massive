@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 import { authUser } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Admin panel",
-  description: "admin panel",
+  title: "Dashboard | Massive",
+  description: "Dashboard | Massive",
 };
 
 export default async function Layout({
