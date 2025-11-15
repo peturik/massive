@@ -14,7 +14,7 @@ export default function SideNav() {
         href="/blog"
       >
         <div className=" font-alegreya w-32 text-white text-5xl md:w-40">
-          Home
+          Massive
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">

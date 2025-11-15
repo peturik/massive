@@ -1,24 +1,14 @@
 "use client";
-import {
-  UserGroupIcon,
-  HomeIcon,
-  DocumentDuplicateIcon,
-} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { Tags, Newspaper, Users, HousePlug } from "lucide-react";
 
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: "Home", href: "/dashboard", icon: HomeIcon },
-  // { name: "about", href: "/dashboard", icon: HomeIcon },
-  {
-    name: "Posts",
-    href: "/dashboard/posts",
-    icon: DocumentDuplicateIcon,
-  },
-  { name: "Customers", href: "#", icon: UserGroupIcon },
+  { name: "Dashboard", href: "/dashboard", icon: HousePlug },
+  { name: "Posts", href: "/dashboard/posts", icon: Newspaper },
+  { name: "Tags", href: "/dashboard/tags", icon: Tags },
+  { name: "Users", href: "#", icon: Users },
 ];
 
 export default function Navbar() {
@@ -35,7 +25,7 @@ export default function Navbar() {
               "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 dark:bg-gray-700  p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-400 md:flex-none md:justify-start md:p-2 md:px-3",
               {
                 "bg-sky-100 text-blue-400": pathname === link.href,
-              }
+              },
             )}
           >
             <LinkIcon className="w-6" />
