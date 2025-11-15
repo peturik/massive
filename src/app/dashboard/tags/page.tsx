@@ -7,9 +7,8 @@ export default async function Tags() {
 
   const { data: posts } = await supabase.from("posts").select("tags");
   const postsTags = posts?.map((post) => post.tags);
-  const count = postsTags?.join().split(",");
 
-  const c = count?.reduce((acc, curr) => {
+  const c = postsTags?.reduce((acc, curr) => {
     acc[curr] = (acc[curr] || 0) + 1;
     return acc;
   }, {});
