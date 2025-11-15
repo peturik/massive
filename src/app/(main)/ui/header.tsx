@@ -1,7 +1,6 @@
 import React from "react";
 import Navbar from "./navbar";
 import Link from "next/link";
-import MobileNav from "./MobileNav";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import { getTags } from "@/lib/fetchPost";
 import { ButtonMenu } from "../blog/components/button-menu";
