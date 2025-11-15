@@ -61,7 +61,7 @@ export default async function Page(props: {
               <div>
                 {role === "admin" && (
                   <Link
-                    href={`/dashboard/posts/${post.id}/edit`}
+                    href={`/dashboard/posts/${post.slug}/edit`}
                     className="hover:underline text-blue-400 text-sm"
                   >
                     Update this post

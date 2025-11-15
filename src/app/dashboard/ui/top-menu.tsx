@@ -1,12 +1,12 @@
-// import ThemeToggle from "@/app/components/ThemeToggle";
+import ThemeToggle from "@/app/components/ThemeToggle";
 
-import { ThemeSwitcher } from "@/components/theme-switcher";
+// import { ThemeSwitcher } from "@/components/theme-switcher";
 
 export default async function TopMenu({ user }: { user: string | undefined }) {
   return (
     <div className="py-5 md:pr-12 flex justify-end">
       <div className="px-4">
-        {/* <ThemeToggle /> */} <ThemeSwitcher />
+        <ThemeToggle />
       </div>
       Hello {user}
     </div>

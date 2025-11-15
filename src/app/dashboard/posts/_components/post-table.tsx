@@ -5,6 +5,7 @@ import { DeletePost, UpdatePost } from "./buttons";
 import ButtonCheckBox from "./button-checkbox";
 import { formatDistanceToNowStrict } from "date-fns";
 import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
 
 export default async function PostsTable({ posts }: { posts: Post[] }) {
   const changeStatus = async (val: boolean, id: string) => {
@@ -133,16 +134,16 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                       )}
                     </div>
                   </td>
-
-                  <td className="whitespace-normal px-3 py-3">{post.title}</td>
+                  <td className="whitespace-normal px-3 py-3">
+                    <Link href={`/dashboard/posts/${post.id}`}>
+                      {post.title}
+                    </Link>
+                  </td>
                   {/* <td className="whitespace-normal px-3 py-3">{post.slug}</td> */}
-
                   <td className="whitespace-normal px-3 py-3 ">
                     {post.body.slice(0, 50)}...
                   </td>
-
                   <td className="whitespace-normal px-3 py-3 ">{post.tags}</td>
-
                   <td className="whitespace-normal px-3 py-3">
                     {/* {post.updated_at} */}
                     {post.updated_at &&
@@ -150,7 +151,6 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                         addSuffix: true,
                       })}
                   </td>
-
                   <td className="whitespace-normal px-3 py-3 text-center">
                     <ButtonCheckBox
                       status={post.status}
@@ -158,7 +158,6 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                       postId={post.id}
                     />
                   </td>
-
                   <td className="whitespace-normal py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdatePost id={post.id} />
