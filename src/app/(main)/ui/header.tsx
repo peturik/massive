@@ -4,6 +4,7 @@ import Link from "next/link";
 import MobileNav from "./MobileNav";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import { getTags } from "@/lib/fetchPost";
+import { ButtonMenu } from "../blog/components/button-menu";
 
 export default async function Header() {
   const tags = await getTags();
@@ -24,8 +25,7 @@ export default async function Header() {
             <ThemeToggle />
           </div>
 
-          <MobileNav tags={tags} />
-
+          <ButtonMenu tags={tags} />
           <Navbar />
         </div>
       </div>
