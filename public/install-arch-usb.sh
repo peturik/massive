@@ -124,7 +124,7 @@ cat <<BOOT > /boot/loader/entries/arch.conf
 title   Arch Linux (USB)
 linux   /vmlinuz-linux
 initrd  /initramfs-linux.img
-options root=UUID=\$ROOT_UUID rw add_efi_memmap iommu=soft
+options root=UUID=\$ROOT_UUID rw add_efi_memmap iommu=soft usbcore.autosuspend=-1
 BOOT
 
 # LTS kernel config
