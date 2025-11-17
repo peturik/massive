@@ -12,7 +12,7 @@ export default async function Header() {
     <nav className="">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4 py-10">
         <Link
-          href="/"
+          href="/blog"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <span className="font-danfo self-center text-3xl font-semibold whitespace-nowrap">
