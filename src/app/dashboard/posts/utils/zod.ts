@@ -20,7 +20,7 @@ export function PostSchema() {
     body: z
       .string()
       .min(10, { message: "Body must be at least 10 characters long" }),
-    tags: z.string().optional(),
+    tags: z.string().array().optional(),
     // Дозволяємо File, null або undefined для image
     image: z.union([z.instanceof(File), z.null(), z.undefined()]).optional(),
     // Дозволяємо масив File, null або undefined для gallery

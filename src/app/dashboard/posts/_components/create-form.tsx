@@ -145,13 +145,17 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
             </div>
           </div>
 
-          {/* Select */}
+          {/* Tags */}
           <div className="mb-4 p-6 rounded-md  bg-gray-50 border border-gray-100 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300 ">
             <div>Tags</div>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
                 <MultiTagSelect tag={tags} setValue={setSelectedOption} />
-                <input type="hidden" name="tags" value={selectedOption} />
+                <input
+                  type="hidden"
+                  name="tags"
+                  value={JSON.stringify(selectedOption)}
+                />
               </div>
             </div>
           </div>

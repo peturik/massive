@@ -109,7 +109,7 @@ async function deleteSupabaseFolder(dirPath: string) {
     if (removeError) {
       console.error(
         `Error removing files from folder ${dirPath}:`,
-        removeError.message
+        removeError.message,
       );
       throw new Error(`Failed to remove files: ${removeError.message}`);
     }
@@ -139,11 +139,46 @@ function getFilesFromFormData(formData: FormData, fieldName: string): File[] {
   return files;
 }
 
+async function saveTags(tags: string[], postId: string) {
+  const supabase = await createClient();
+  console.log("run in saveTags");
+
+  try {
+    for (const tag of tags) {
+      const { data: existingTag } = await supabase
+        .from("tags")
+        .select("id")
+        .eq("title", tag)
+        .single();
+
+      if (existingTag) {
+        await supabase.from("posts_tags").insert({
+          post_id: postId,
+          tag_id: existingTag.id,
+        });
+      } else {
+        const { data: newTag } = await supabase
+          .from("tags")
+          .insert({ title: tag })
+          .select("id")
+          .single();
+
+        await supabase.from("posts_tags").insert({
+          post_id: postId,
+          tag_id: newTag?.id,
+        });
+      }
+    }
+  } catch (error) {
+    console.log("error saveTags: ", error);
+  }
+}
+
 /* `createPost` (Створення нового поста) */
 export async function createPost(
   prevState: string | undefined,
   formData: FormData,
-  userId?: string
+  userId?: string,
 ) {
   const supabase = await createClient();
 
@@ -164,12 +199,14 @@ export async function createPost(
       slug: formData.get("slug"),
       description: formData.get("description"),
       body: formData.get("body"),
-      tags: formData.get("tags"),
+      tags: JSON.parse(formData.get("tags") as string),
       image: imageFiles[0] || null, // Передаємо File або null
       gallery: galleryFiles.length > 0 ? galleryFiles : null, // Передаємо масив File або null
       status: formData.get("status"),
     });
 
+    // console.log(tags);
+    // return;
     const statusValue = status ? Number(status) : 0;
     let imageUrl = "";
     let galleryUrl: string[] = [];
@@ -184,24 +221,30 @@ export async function createPost(
       [imageUrl] = await uploadSupabaseFiles(imageFiles, slug);
     }
 
-    const tagsForm = await handleTags(tags);
+    // const tagsForm = await handleTags(tags);
 
     // Створення поста в Supabase
-    const { error } = await supabase.from("posts").insert([
-      {
-        title,
-        slug,
-        description,
-        body,
-        tags: tagsForm.join(","),
-        image_url: imageUrl,
-        gallery: galleryUrl,
-        status: statusValue,
-        user_id: userId,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    ]);
+    const { data: post, error } = await supabase
+      .from("posts")
+      .insert([
+        {
+          title,
+          slug,
+          description,
+          body,
+          // tags: tagsForm.join(","),
+          image_url: imageUrl,
+          gallery: galleryUrl,
+          status: statusValue,
+          user_id: userId,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ])
+      .select("id")
+      .single();
+
+    if (tags && tags?.length > 0) saveTags(tags as string[], post?.id);
 
     if (error) {
       throw new Error(`Supabase error from Create Post: ${error.message}`);
@@ -223,7 +266,7 @@ export async function createPost(
 /* UPDATE POST */
 export async function updatePost(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
   const supabase = await createClient();
 
@@ -263,7 +306,7 @@ export async function updatePost(
     // Обробка галереї
     if (galleryFiles.length > 0) {
       galleryUrl.push(
-        ...(await uploadSupabaseFiles(galleryFiles, `${slug}/gallery`))
+        ...(await uploadSupabaseFiles(galleryFiles, `${slug}/gallery`)),
       );
     }
 
@@ -279,7 +322,7 @@ export async function updatePost(
         // Видаляємо всі файли з теки поста (основне зображення)
         if (folderFiles && folderFiles.length > 0) {
           const filePaths = folderFiles.map(
-            (file) => `${post.slug}/${file.name}`
+            (file) => `${post.slug}/${file.name}`,
           );
           await supabase.storage.from("uploads").remove(filePaths);
         }
