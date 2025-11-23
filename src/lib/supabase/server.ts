@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { PostgrestSingleResponse } from "@supabase/supabase-js";
 
 /**
  * Especially important if using Fluid compute: Don't put this client in a
@@ -19,9 +20,9 @@ export async function createClient() {
         },
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options);
+            });
           } catch {
             // The `setAll` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing
@@ -29,8 +30,12 @@ export async function createClient() {
           }
         },
       },
-    }
+    },
   );
+}
+
+export interface Profile {
+  role: string;
 }
 
 export const authUser = async () => {
@@ -38,12 +43,12 @@ export const authUser = async () => {
   const { data, error } = await supabase.auth.getUser();
   const user = data.user;
 
-  const profile = supabase
+  const profile = (await supabase
     .from("profiles")
     .select("role")
-    .eq("id", user?.id)
-    .single();
+    .eq("id", user?.id as string)
+    .single()) as PostgrestSingleResponse<Profile>;
 
-  const role = (await profile).data?.role;
+  const role = profile.data?.role;
   return { user, role, error };
 };

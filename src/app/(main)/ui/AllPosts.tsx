@@ -1,5 +1,5 @@
 "use client";
-import type { Post } from "@/types/types";
+import type { PostTags } from "@/app/dashboard/posts/utils/types";
 import Md from "./md";
 import { use } from "react";
 import Link from "next/link";
@@ -9,14 +9,14 @@ export default function AllPosts({
   posts,
   role,
 }: {
-  posts: Promise<Post[]>;
+  posts: Promise<PostTags[]>;
   role: string;
 }) {
   const allPosts = use(posts);
 
   return (
     <div className="flex flex-wrap">
-      {allPosts?.map((post: Post) => {
+      {allPosts?.map((post: PostTags) => {
         if (!post.status) return null;
         return (
           <div className="font-alegreya mb-12 pt-6 w-fill" key={post.id}>
@@ -37,7 +37,7 @@ export default function AllPosts({
             {role == "admin" && (
               <div className="text-sm">
                 <Link
-                  href={`/dashboard/posts/${post.id}/edit`}
+                  href={`/dashboard/posts/${post.slug}/edit`}
                   className="hover:underline text-blue-400"
                 >
                   Update this post

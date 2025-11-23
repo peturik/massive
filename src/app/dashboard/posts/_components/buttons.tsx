@@ -19,10 +19,10 @@ export function CreatePost() {
   );
 }
 
-export function UpdatePost({ id }: { id: string }) {
+export function UpdatePost({ slug }: { slug: string }) {
   return (
     <Link
-      href={`/dashboard/posts/${id}/edit`}
+      href={`/dashboard/posts/${slug}/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />

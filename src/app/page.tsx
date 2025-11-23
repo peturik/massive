@@ -1,9 +1,9 @@
 import React from "react";
-import { getTags } from "@/lib/fetchPost";
+import { fetchTags } from "./dashboard/posts/utils/fetchTags";
 import Link from "next/link";
 
 export default async function Page() {
-  const tags = await getTags();
+  const tags = await fetchTags();
 
   return (
     <>

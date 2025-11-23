@@ -1,22 +1,25 @@
 import Image from "next/image";
-import type { Post } from "../utils/types";
-
+import type { PostTags } from "../utils/types";
+import { PostUpdate } from "../utils/types";
 import { DeletePost, UpdatePost } from "./buttons";
 import ButtonCheckBox from "./button-checkbox";
 import { formatDistanceToNowStrict } from "date-fns";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
-export default async function PostsTable({ posts }: { posts: Post[] }) {
+export default async function PostsTable({ posts }: { posts: PostTags[] }) {
   const changeStatus = async (val: boolean, id: string) => {
     "use server";
     const supabase = await createClient();
     try {
       const valNum = val === true ? 1 : 0;
 
+      const updateData: PostUpdate = {
+        status: valNum,
+      };
       const { error } = await supabase
         .from("posts")
-        .update({ status: valNum })
+        .update(updateData)
         .eq("id", id);
 
       if (error) {
@@ -33,7 +36,7 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
         <div className="rounded-lg  dark:text-gray-300 md:pt-0">
           {/* mobile */}
           <div className="md:hidden">
-            {posts?.map((post: Post) => {
+            {posts?.map((post: PostTags) => {
               return (
                 <div
                   key={post.id}
@@ -59,7 +62,7 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                     </div>
                     <ButtonCheckBox
                       status={post.status}
-                      changeStatus={changeStatus}
+                      changeStatusAction={changeStatus}
                       postId={post.id}
                     />
                   </div>
@@ -71,7 +74,7 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                       </p>
                     </div>
                     <div className="flex justify-end gap-2">
-                      <UpdatePost id={post.id} />
+                      <UpdatePost slug={post.slug} />
                       <DeletePost title={post.title} id={post.id} />
                     </div>
                   </div>
@@ -116,11 +119,12 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-600 dark:text-gray-300">
-              {posts?.map((post: Post) => (
+              {posts?.map((post: PostTags) => (
                 <tr
                   key={post.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
+                  {/* image */}
                   <td className="whitespace-normal py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
                       {post.image_url && (
@@ -134,33 +138,54 @@ export default async function PostsTable({ posts }: { posts: Post[] }) {
                       )}
                     </div>
                   </td>
+
+                  {/* title */}
                   <td className="whitespace-normal px-3 py-3">
-                    <Link href={`/dashboard/posts/${post.id}`}>
+                    <Link href={`/dashboard/posts/${post.slug}`}>
                       {post.title}
                     </Link>
                   </td>
+
+                  {/* slug */}
                   {/* <td className="whitespace-normal px-3 py-3">{post.slug}</td> */}
+
+                  {/* body */}
                   <td className="whitespace-normal px-3 py-3 ">
                     {post.body.slice(0, 50)}...
                   </td>
-                  <td className="whitespace-normal px-3 py-3 ">{post.tags}</td>
+
+                  {/* tags */}
+
+                  {post.posts_tags && (
+                    <td className="whitespace-normal px-3 py-3">
+                      {post.posts_tags.map((tag) => {
+                        if (!tag.tags) return null;
+                        return <p key={tag.tags.id}>{tag.tags.title}</p>;
+                      })}
+                    </td>
+                  )}
+
+                  {/* updated_at */}
                   <td className="whitespace-normal px-3 py-3">
-                    {/* {post.updated_at} */}
                     {post.updated_at &&
                       formatDistanceToNowStrict(new Date(post.created_at), {
                         addSuffix: true,
                       })}
                   </td>
+
+                  {/* status */}
                   <td className="whitespace-normal px-3 py-3 text-center">
                     <ButtonCheckBox
                       status={post.status}
-                      changeStatus={changeStatus}
+                      changeStatusAction={changeStatus}
                       postId={post.id}
                     />
                   </td>
+
+                  {/* edit */}
                   <td className="whitespace-normal py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdatePost id={post.id} />
+                      <UpdatePost slug={post.slug} />
                       <DeletePost title={post.title} id={post.id} />
                     </div>
                   </td>

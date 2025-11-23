@@ -1,8 +1,8 @@
 import React from "react";
-import { getTags } from "@/lib/fetchPost";
+import { fetchTags } from "@/app/dashboard/posts/utils/fetchTags";
 
 export default async function Page() {
-  const tags = await getTags();
+  const tags = await fetchTags();
 
   return (
     <div className="border py-20">

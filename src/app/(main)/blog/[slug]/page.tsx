@@ -1,46 +1,41 @@
 import { Suspense } from "react";
-import type { Post } from "@/types/types";
-import { relatedPosts, singlePost } from "@/lib/fetchPost";
+import type { PostTags } from "@/app/dashboard/posts/utils/types";
+import {
+  relatedPosts,
+  singlePost,
+} from "@/app/dashboard/posts/utils/fetchPost";
 import Md from "@/app/(main)/ui/md";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { authUser } from "@/lib/supabase/server";
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = (await params).slug;
-  console.log(await parent);
-  // fetch post information
-
-  const post = (await singlePost(slug)) as Post;
-
+  const post = (await singlePost(slug)) as PostTags;
   return {
     title: post.title,
     description: post.description,
   };
 }
+
 export default async function Page(props: {
   params: Promise<{ slug: string }>;
 }) {
   const { role } = await authUser();
 
   const { slug } = await props.params;
-  const post = (await singlePost(slug)) as Post;
+  const post = (await singlePost(slug)) as PostTags;
 
-  const r = post?.tags?.split(",").filter((tag) => {
-    return post.title.toLowerCase().match(tag.toLowerCase());
-  });
-
-  const related = await relatedPosts(r as string[], post.slug);
+  // const tags =
+  const tags = post?.posts_tags.map((tag) => tag?.tags?.title.toLowerCase());
+  const related = await relatedPosts(tags as string[], post.slug);
 
   return (
     <div>
@@ -72,14 +67,14 @@ export default async function Page(props: {
               <div className="sm:hidden sticky">
                 <div className="pt-2">
                   <p>
-                    {post?.tags &&
-                      post.tags.split(",").map((tag) => (
-                        <span key={tag} className="mr-2">
+                    {post?.posts_tags &&
+                      post.posts_tags.map((tag) => (
+                        <span key={tag?.tags?.id} className="mr-2">
                           <Link
                             className="hover:underline text-blue-400"
-                            href={`/blog?query=${tag}`}
+                            href={`/blog?query=${tag?.tags?.title.toLowerCase()}`}
                           >
-                            #{tag}
+                            #{tag?.tags?.title}
                           </Link>
                         </span>
                       ))}
@@ -107,17 +102,16 @@ export default async function Page(props: {
               <h2>Tags</h2>
               <div className="pt-2">
                 <p>
-                  {post?.tags &&
-                    post.tags.split(",").map((tag) => (
-                      <span key={tag} className="mr-2">
-                        <Link
-                          href={`/blog?query=${tag}`}
-                          className="hover:underline text-blue-400 text-lg"
-                        >
-                          #{tag}
-                        </Link>
-                      </span>
-                    ))}
+                  {post?.posts_tags?.map((tag) => (
+                    <span key={tag?.tags?.id} className="mr-2">
+                      <Link
+                        href={`/blog?query=${tag?.tags?.title.toLowerCase()}`}
+                        className="hover:underline text-blue-400 text-lg"
+                      >
+                        #{tag?.tags?.title}
+                      </Link>
+                    </span>
+                  ))}
                 </p>
               </div>
             </div>

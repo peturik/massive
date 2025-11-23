@@ -2,11 +2,11 @@ import React from "react";
 import Navbar from "./navbar";
 import Link from "next/link";
 import ThemeToggle from "@/app/components/ThemeToggle";
-import { getTags } from "@/lib/fetchPost";
 import { ButtonMenu } from "../blog/components/button-menu";
+import { fetchTags } from "@/app/dashboard/posts/utils/fetchTags";
 
 export default async function Header() {
-  const tags = await getTags();
+  const tags = await fetchTags();
 
   return (
     <nav className="">

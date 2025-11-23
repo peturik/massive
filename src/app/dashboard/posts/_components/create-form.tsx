@@ -6,7 +6,7 @@ import { useState, useActionState, useId } from "react";
 import slug from "slug";
 import { Button } from "./button";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import type { Tag } from "../utils/types";
+import type { Tags } from "../utils/types";
 import MDEditor from "@uiw/react-md-editor";
 import ButtonCheckBox from "./button-checkbox";
 import { ImageGallery } from "./image-gallery";
@@ -14,15 +14,14 @@ import { MainImage } from "./main-image";
 import { Input } from "@/components/ui/input";
 import { MultiTagSelect } from "./multi-tag-select";
 
-export default function CreateFormPost({ tags }: { tags: Tag[] }) {
+export default function CreateFormPost({ tags }: { tags: Tags[] }) {
   const [title, setTitle] = useState("");
-  const [selectedOption, setSelectedOption] = useState<string[]>([]);
+  const [tagValue, setTagValue] = useState<string[]>([]);
   const [valueDesc, setValueDesc] = useState("");
   const [valueBody, setValueBody] = useState("");
   const [status, setStatus] = useState(1);
   const [slugTitle, setSlugTitle] = useState("");
   const [gallery, setGallery] = useState<string[]>([]);
-
   const idTitle = useId();
   const idSlug = useId();
   const idDesription = useId();
@@ -150,11 +149,11 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
             <div>Tags</div>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
-                <MultiTagSelect tag={tags} setValue={setSelectedOption} />
+                <MultiTagSelect tag={tags} setValue={setTagValue} />
                 <input
                   type="hidden"
                   name="tags"
-                  value={JSON.stringify(selectedOption)}
+                  value={JSON.stringify(tagValue)}
                 />
               </div>
             </div>
@@ -191,7 +190,10 @@ export default function CreateFormPost({ tags }: { tags: Tag[] }) {
             <div className="relative mt-2 rounded-md">
               <div className="relative">
                 <span>Status</span>
-                <ButtonCheckBox status={status} changeStatus={changeStatus} />
+                <ButtonCheckBox
+                  status={status}
+                  changeStatusAction={changeStatus}
+                />
                 <input
                   id={idStatus}
                   name="status"

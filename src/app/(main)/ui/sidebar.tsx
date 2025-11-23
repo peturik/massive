@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { Tag } from "@/types/types";
+import { Tags } from "@/app/dashboard/posts/utils/types";
 
 export const Sidebar = ({
   tags,
   handler,
 }: {
-  tags: Tag[];
+  tags: Tags[];
   handler?: () => void;
 }) => {
   return (

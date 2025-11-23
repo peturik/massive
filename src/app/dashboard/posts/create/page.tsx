@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import CreateFormPost from "../_components/create-form";
 import Breadcrumbs from "../_components/breadcrumbs";
-import { getTags } from "../utils/actions";
+import { fetchTags } from "@/app/dashboard/posts/utils/fetchTags";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const tags = await getTags();
+  const tags = await fetchTags();
 
   return (
     <div>

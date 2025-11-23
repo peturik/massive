@@ -10,10 +10,8 @@ export async function fetchFilteredPosts(query: string, currentPage: number) {
   try {
     const queryBuilder = supabase
       .from("posts")
-      .select("*")
-      .or(
-        `body.ilike.%${query}%,title.ilike.%${query}%,tags.ilike.%${query}%,slug.ilike.%${query}%`,
-      )
+      .select("*, posts_tags(tags(*))")
+      .or(`body.ilike.%${query}%,title.ilike.%${query}%,slug.ilike.%${query}%`)
       .order("created_at", { ascending: false })
       .range(offset, offset + ITEMS_PER_PAGE - 1);
 
@@ -24,6 +22,24 @@ export async function fetchFilteredPosts(query: string, currentPage: number) {
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Failed to fetch posts.");
+  }
+}
+
+export async function singlePost(slug: string) {
+  const supabase = await createClient();
+
+  try {
+    const { data: post, error } = await supabase
+      .from("posts")
+      .select("*, posts_tags(tags(*))")
+      .eq("slug", slug)
+      .single();
+
+    if (error) throw error;
+    return post;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch post.");
   }
 }
 
@@ -44,24 +60,6 @@ export async function fetchCountPosts(query: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch total number of posts.");
-  }
-}
-
-export async function singlePost(slug: string) {
-  const supabase = await createClient();
-
-  try {
-    const { data: post, error } = await supabase
-      .from("posts")
-      .select("*")
-      .eq("slug", slug)
-      .single();
-
-    if (error) throw error;
-    return post;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch post.");
   }
 }
 

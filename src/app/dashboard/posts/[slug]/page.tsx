@@ -1,17 +1,18 @@
 import Breadcrumbs from "../_components/breadcrumbs";
 import { Suspense } from "react";
-import { getPostAndTags } from "../utils/actions";
+import { singlePost } from "@/app/dashboard/posts/utils/fetchPost";
 import Md from "../utils/md";
 import Link from "next/link";
 import { Metadata } from "next";
+import { PostTags } from "../utils/types";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const { post } = await getPostAndTags(id);
+  const slug = (await params).slug;
+  const post = (await singlePost(slug)) as PostTags;
   return {
     title: `Massive | ${post.title}`,
     description: post.description,
@@ -21,10 +22,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SinglePost({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
-  const { post } = await getPostAndTags(id);
+  const slug = (await params).slug;
+  const post = (await singlePost(slug)) as PostTags;
 
   return (
     <main>
@@ -45,14 +46,14 @@ export default async function SinglePost({
           <h1 className="text-4xl font-bold">{post.title}</h1>
           <div className="text-sm ">
             <Link
-              href={`/dashboard/posts/${post.id}/edit`}
+              href={`/dashboard/posts/${post.slug}/edit`}
               className="hover:underline text-blue-400"
             >
               Update this post
             </Link>
           </div>
           <div className="border-t border-gray-400 mt-16 pt-8">
-            <Md post={post} column="body" />
+            <Md post={post!} column="body" />
           </div>
         </Suspense>
       </div>

@@ -5,51 +5,9 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import type { Post, Tag } from "./types";
+import type { Posts, Tags } from "./types";
 
 const postSchema = PostSchema();
-
-/**
- * Допоміжна функція для обробки тегів.
- */
-async function handleTags(tagsString: string | undefined) {
-  const tags =
-    tagsString
-      ?.split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0) || [];
-
-  try {
-    if (tags.length > 0) {
-      const supabase = await createClient();
-
-      for (const tag of tags) {
-        const { data: existingTag } = await supabase
-          .from("tags")
-          .select("title")
-          .eq("title", tag)
-          .single();
-
-        if (!existingTag) {
-          try {
-            const { error: errorDataTag } = await supabase
-              .from("tags")
-              .insert([{ title: tag }]);
-
-            if (errorDataTag) console.log("errorDataTag: ", errorDataTag);
-          } catch (error) {
-            console.error("Error while create tag: ", error);
-          }
-        }
-      }
-    }
-  } catch (error) {
-    console.error("Database error:", error);
-    throw new Error("Failed to create Tags");
-  }
-
-  return tags;
-}
 
 /**
  * Допоміжна функція для завантаження файлів у Supabase Storage.
@@ -181,6 +139,7 @@ export async function createPost(
   userId?: string,
 ) {
   const supabase = await createClient();
+  console.log(prevState);
 
   if (!userId) {
     const { data: user } = await supabase.auth.getUser();
@@ -205,8 +164,6 @@ export async function createPost(
       status: formData.get("status"),
     });
 
-    // console.log(tags);
-    // return;
     const statusValue = status ? Number(status) : 0;
     let imageUrl = "";
     let galleryUrl: string[] = [];
@@ -269,6 +226,7 @@ export async function updatePost(
   formData: FormData,
 ) {
   const supabase = await createClient();
+  console.log(prevState);
 
   try {
     // Спочатку отримуємо файли
@@ -283,7 +241,7 @@ export async function updatePost(
         slug: formData.get("slug"),
         description: formData.get("description"),
         body: formData.get("body"),
-        tags: formData.get("tags"),
+        tags: JSON.parse(formData.get("tags") as string),
         image: imageFiles[0] || null, // Передаємо File або null
         gallery: galleryFiles.length > 0 ? galleryFiles : null, // Передаємо масив File або null
         status: formData.get("status"),
@@ -331,7 +289,7 @@ export async function updatePost(
       [imageUrl] = await uploadSupabaseFiles(imageFiles, slug);
     }
 
-    const tagsForm = await handleTags(tags);
+    // const tagsForm = await handleTags(tags);
 
     // Оновлення поста в Supabase
     const { error } = await supabase
@@ -341,13 +299,17 @@ export async function updatePost(
         slug,
         description,
         body,
-        tags: tagsForm.join(","),
+        // tags: tagsForm.join(","),
         image_url: imageUrl,
         gallery: galleryUrl,
         status: Number(status),
         updated_at: new Date().toISOString(),
       })
       .eq("id", id);
+
+    // DELETE FROM post_tags WHERE post_id = 'post-uuid';
+
+    if (tags && tags?.length > 0) saveTags(tags as string[], id as string);
 
     if (error) {
       throw new Error(`Supabase error from update Post: ${error.message}`);
@@ -434,31 +396,12 @@ export async function getPostAndTags(id: string) {
       throw new Error(`Tags fetch error: ${tagsError.message}`);
     }
 
-    const postData = post as unknown as Post;
-    const tagsData = tags as unknown as Tag[];
+    const postData = post as unknown as Posts;
+    const tagsData = tags as unknown as Tags[];
 
     return { post: postData, tags: tagsData };
   } catch (error) {
     console.error("Database error:", error);
     throw new Error("Failed to fetch data");
-  }
-}
-
-export async function getTags() {
-  const supabase = await createClient();
-  try {
-    const { data: tags, error: tagsError } = await supabase
-      .from("tags")
-      .select("*")
-      .order("rate", { ascending: false });
-
-    if (tagsError) {
-      throw new Error(`Tags fetch error: ${tagsError.message}`);
-    }
-
-    return tags as unknown as Tag[];
-  } catch (error) {
-    console.error("Database error:", error);
-    throw new Error("Failed to fetch Tags data");
   }
 }

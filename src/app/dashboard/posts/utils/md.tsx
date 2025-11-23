@@ -2,13 +2,13 @@
 import { useThemeStore } from "@/stores/useThemeStore";
 import MDEditor from "@uiw/react-md-editor";
 import { motion } from "motion/react";
-import type { Post } from "@/types/types";
+import type { Posts } from "./types";
 
 export default function Md({
   post,
   column,
 }: {
-  post: Post;
+  post: Posts;
   column: "body" | "description";
 }) {
   const theme = useThemeStore((state) => state.theme);

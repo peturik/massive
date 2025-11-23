@@ -5,20 +5,20 @@ import { useState } from "react";
 
 type Props = {
   status: number;
-  changeStatus: (val: boolean, id: string) => void;
+  changeStatusAction: (val: boolean, id: string) => void;
   postId?: string;
 };
 
 export default function ButtonCheckBox({
   status,
-  changeStatus,
+  changeStatusAction,
   postId = "",
 }: Props) {
   const [isOn, setIsOn] = useState(!!status);
 
   const toggleSwitch = () => {
     setIsOn(!isOn);
-    changeStatus(!isOn, postId);
+    changeStatusAction(!isOn, postId);
   };
 
   return (

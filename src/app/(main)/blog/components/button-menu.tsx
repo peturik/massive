@@ -11,10 +11,10 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { Sidebar } from "../../ui/sidebar";
 import { headerNavLinks } from "../../ui/headerNavLinks";
-import { Tag } from "@/types/types";
+import { Tags } from "@/app/dashboard/posts/utils/types";
 import { useState } from "react";
 
-export function ButtonMenu({ tags }: { tags: Tag[] }) {
+export function ButtonMenu({ tags }: { tags: Tags[] }) {
   const [open, setOpen] = useState(false);
 
   const handleLinkClick = () => {

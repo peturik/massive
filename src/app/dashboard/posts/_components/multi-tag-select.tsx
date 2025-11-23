@@ -48,12 +48,14 @@ export function MultiTagSelect({ tag, setValue, existingTags = "" }: Props) {
   }, [selectedOption, setValue]);
 
   useEffect(() => {
-    setSelectedOption(
-      existingTags
-        .split(",")
-        .filter(Boolean)
-        .map((item) => item),
-    );
+    if (existingTags) {
+      setSelectedOption(
+        existingTags
+          .split(",")
+          .filter(Boolean)
+          .map((item) => item),
+      );
+    }
   }, [existingTags]);
 
   // Handler та handleAddTag

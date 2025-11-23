@@ -1,10 +1,13 @@
 import { Suspense } from "react";
 import AllPosts from "@/app/(main)/ui/AllPosts";
 import Pagination from "@/app/components/pagination";
-import { fetchCountPosts, getTags } from "@/lib/fetchPost";
+import {
+  fetchCountPosts,
+  fetchFilteredPosts,
+} from "@/app/dashboard/posts/utils/fetchPost";
+import { fetchTags } from "@/app/dashboard/posts/utils/fetchTags";
+import type { PostTags } from "@/app/dashboard/posts/utils/types";
 import "@/app/(main)/style.css";
-import { fetchFilteredPosts } from "@/lib/fetchPost";
-import type { Post } from "@/types/types";
 import { Sidebar } from "@/app/(main)/ui/sidebar";
 import Link from "next/link";
 import Search from "@/app/components/search";
@@ -29,9 +32,9 @@ export default async function BlogPage(props: {
 
   const { role } = await authUser();
 
-  const tags = await getTags();
+  const tags = await fetchTags();
 
-  const posts = fetchFilteredPosts(query, currentPage) as Promise<Post[]>;
+  const posts = fetchFilteredPosts(query, currentPage) as Promise<PostTags[]>;
 
   return (
     <main>
@@ -55,7 +58,7 @@ export default async function BlogPage(props: {
           </div>
           <div className="sm:basis-9/12">
             <Suspense key={query + currentPage} fallback={<h2>Loading...</h2>}>
-              <AllPosts posts={posts} role={role} />
+              <AllPosts posts={posts} role={role as string} />
             </Suspense>
           </div>
         </div>

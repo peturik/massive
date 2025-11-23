@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useActionState, useId, useState } from "react";
 import slug from "slug";
 import { Button } from "./button";
-import type { Post, Tag } from "../utils/types";
+import type { PostTags, Tags } from "../utils/types";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import MDEditor from "@uiw/react-md-editor";
 import ButtonCheckBox from "./button-checkbox";
@@ -15,8 +15,8 @@ import { Input } from "@/components/ui/input";
 import { MultiTagSelect } from "./multi-tag-select";
 
 type Props = {
-  post: Post;
-  tags: Tag[];
+  post: PostTags;
+  tags: Tags[];
 };
 
 export default function EditFormPost({ post, tags }: Props) {
@@ -26,9 +26,18 @@ export default function EditFormPost({ post, tags }: Props) {
     post.gallery ? JSON.parse(post.gallery) : [],
   );
 
-  const [selectedOption, setSelectedOption] = useState<string[]>(
-    post.tags ? post.tags.split(",") : [],
+  // const [tagValue, setTagValue] = useState<string[]>(
+  //  post.tags ? post.tags.split(",") : [],
+  // );
+
+  const [tagValue, setTagValue] = useState<string[]>(
+    post.posts_tags
+      ? post.posts_tags
+          .map((tag) => tag?.tags?.title)
+          .filter((title): title is string => !!title)
+      : [],
   );
+
   const [valueDesc, setValueDesc] = useState<string | undefined>(
     post.description,
   );
@@ -171,10 +180,16 @@ export default function EditFormPost({ post, tags }: Props) {
               <div className="relative">
                 <MultiTagSelect
                   tag={tags}
-                  setValue={setSelectedOption}
-                  existingTags={post.tags}
+                  setValue={setTagValue}
+                  existingTags={post.posts_tags
+                    .map((tag) => tag?.tags?.title)
+                    .join()}
                 />
-                <input type="hidden" name="tags" value={selectedOption} />
+                <input
+                  type="hidden"
+                  name="tags"
+                  value={JSON.stringify(tagValue)}
+                />
               </div>
             </div>
           </div>
@@ -198,6 +213,7 @@ export default function EditFormPost({ post, tags }: Props) {
             <div>Gallery</div>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
+                gg
                 <ImageGallery
                   postSlug={post.slug}
                   onImagesChange={setGallery}
@@ -216,7 +232,7 @@ export default function EditFormPost({ post, tags }: Props) {
                 <span>Status</span>
                 <ButtonCheckBox
                   status={post.status}
-                  changeStatus={changeStatus}
+                  changeStatusAction={changeStatus}
                 />
                 <input
                   id={idStatus}
