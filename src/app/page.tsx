@@ -22,10 +22,10 @@ export default async function Page() {
                 <div key={tag.id} className="relative py-5 text-3xl">
                   <Link
                     href={{
-                      pathname: "/blog",
+                      pathname: "/category",
                       query: {
                         page: 1,
-                        query: tag.title.toLowerCase(),
+                        query: tag.title,
                       },
                     }}
                   >

@@ -2,6 +2,33 @@ import { createClient } from "@/lib/supabase/server";
 
 const ITEMS_PER_PAGE = 10;
 
+export async function fetchCategoryPosts(query: string, currentPage: number) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  const supabase = await createClient();
+
+  try {
+    const { data: tag } = await supabase
+      .from("tags")
+      .select("id")
+      .eq("title", query)
+      .single();
+
+    console.log(tag);
+    const { data: posts } = await supabase
+      .from("posts")
+      .select(`*, posts_tags!inner(tag:tags(*))`)
+      .eq("posts_tags.tag_id", tag?.id)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + ITEMS_PER_PAGE - 1);
+
+    return posts || [];
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch posts.");
+  }
+}
+
 export async function fetchFilteredPosts(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 

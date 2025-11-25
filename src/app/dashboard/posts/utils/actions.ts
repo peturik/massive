@@ -97,6 +97,9 @@ function getFilesFromFormData(formData: FormData, fieldName: string): File[] {
   return files;
 }
 
+/**
+ * Допоміжна функція для збереження тегів у базі даних.
+ */
 async function saveTags(tags: string[], postId: string) {
   const supabase = await createClient();
   console.log("run in saveTags");
@@ -147,11 +150,9 @@ export async function createPost(
   }
 
   try {
-    // Спочатку отримуємо файли
     const imageFiles = getFilesFromFormData(formData, "image");
     const galleryFiles = getFilesFromFormData(formData, "gallery");
 
-    // Парсимо текстові поля з правильними значеннями для файлів
     const { title, slug, description, body, tags, status } = postSchema.parse({
       id: "",
       title: formData.get("title"),
@@ -178,8 +179,6 @@ export async function createPost(
       [imageUrl] = await uploadSupabaseFiles(imageFiles, slug);
     }
 
-    // const tagsForm = await handleTags(tags);
-
     // Створення поста в Supabase
     const { data: post, error } = await supabase
       .from("posts")
@@ -189,7 +188,6 @@ export async function createPost(
           slug,
           description,
           body,
-          // tags: tagsForm.join(","),
           image_url: imageUrl,
           gallery: galleryUrl,
           status: statusValue,
@@ -289,8 +287,6 @@ export async function updatePost(
       [imageUrl] = await uploadSupabaseFiles(imageFiles, slug);
     }
 
-    // const tagsForm = await handleTags(tags);
-
     // Оновлення поста в Supabase
     const { error } = await supabase
       .from("posts")
@@ -299,7 +295,6 @@ export async function updatePost(
         slug,
         description,
         body,
-        // tags: tagsForm.join(","),
         image_url: imageUrl,
         gallery: galleryUrl,
         status: Number(status),
@@ -308,8 +303,10 @@ export async function updatePost(
       .eq("id", id);
 
     // DELETE FROM post_tags WHERE post_id = 'post-uuid';
-
-    if (tags && tags?.length > 0) saveTags(tags as string[], id as string);
+    if (tags && tags?.length > 0) {
+      await supabase.from("posts_tags").delete().eq("post_id", id);
+      saveTags(tags as string[], id as string);
+    }
 
     if (error) {
       throw new Error(`Supabase error from update Post: ${error.message}`);
