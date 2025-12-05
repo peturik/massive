@@ -1,4 +1,3 @@
-import React from "react";
 import { fetchTags } from "./dashboard/posts/utils/fetchTags";
 import Link from "next/link";
 

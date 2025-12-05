@@ -14,7 +14,6 @@ export async function fetchCategoryPosts(query: string, currentPage: number) {
       .eq("title", query)
       .single();
 
-    console.log(tag);
     const { data: posts } = await supabase
       .from("posts")
       .select(`*, posts_tags!inner(tag:tags(*))`)
