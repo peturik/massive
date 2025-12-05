@@ -124,9 +124,6 @@ importers:
         specifier: ^5.0.5
         version: 5.0.8(@types/react@19.2.7)(react@19.2.1)(use-sync-external-store@1.6.0(react@19.2.1))
     devDependencies:
-      '@eslint/eslintrc':
-        specifier: ^3.3.1
-        version: 3.3.1
       '@types/node':
         specifier: ^20.19.1
         version: 20.19.23
