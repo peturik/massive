@@ -1,8 +1,6 @@
 "use client";
 import { signOut } from "@/app/(auth)/actions";
-
 import Link from "next/link";
-import React from "react";
 import { Form } from "@/lib/form";
 
 export default function Footer({ user }: { user: string | undefined }) {
@@ -21,6 +19,7 @@ export default function Footer({ user }: { user: string | undefined }) {
           <br />
           {user && (
             <Form action={signOut}>
+              {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
               <button className="hover:text-blue-400 cursor-pointer">
                 <div className="hidden md:block">Sign Out</div>
               </button>

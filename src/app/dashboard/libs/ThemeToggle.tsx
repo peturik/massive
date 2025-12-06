@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { useThemeStore } from "@/stores/useThemeStore";
+import { useThemeStore } from "@/app/dashboard/libs/stores/useThemeStore";
 
 const ThemeToggle = () => {
   const [mounted, setMounted] = useState(false);

@@ -1,5 +1,5 @@
 "use client";
-import { useThemeStore } from "@/stores/useThemeStore";
+import { useThemeStore } from "@/app/dashboard/libs/stores/useThemeStore";
 import MDEditor from "@uiw/react-md-editor";
 import { motion } from "motion/react";
 import type { Posts } from "./types";

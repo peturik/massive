@@ -3,7 +3,7 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { TextField } from "@mui/material";
-import { useThemeStore } from "@/stores/useThemeStore";
+import { useThemeStore } from "@/app/dashboard/libs/stores/useThemeStore";
 import { motion } from "motion/react";
 
 export default function Search() {

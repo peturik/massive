@@ -45,12 +45,12 @@ export default async function Page(props: {
             <div className="font-alegreya text-4xl font-bold">{post.title}</div>
             <div className="pl-2  text-gray-500">
               <span className=" text-xs text-gray-400">
-                {post.updated_at != post.created_at
+                {post.updated_at !== post.created_at
                   ? `updated at ${formatDistanceToNow(
-                      new Date(post.updated_at),
+                      new Date(post.updated_at)
                     )}`
                   : `created at ${formatDistanceToNow(
-                      new Date(post.created_at),
+                      new Date(post.created_at)
                     )}`}
               </span>
               <div>

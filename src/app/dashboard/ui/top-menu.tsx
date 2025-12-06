@@ -1,4 +1,4 @@
-import ThemeToggle from "@/app/components/ThemeToggle";
+import ThemeToggle from "@/app/dashboard/libs/ThemeToggle";
 
 // import { ThemeSwitcher } from "@/components/theme-switcher";
 
