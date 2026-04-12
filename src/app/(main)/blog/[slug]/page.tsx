@@ -47,10 +47,10 @@ export default async function Page(props: {
               <span className=" text-xs text-gray-400">
                 {post.updated_at !== post.created_at
                   ? `updated at ${formatDistanceToNow(
-                      new Date(post.updated_at)
+                      new Date(post.updated_at),
                     )}`
                   : `created at ${formatDistanceToNow(
-                      new Date(post.created_at)
+                      new Date(post.created_at),
                     )}`}
               </span>
               <div>
@@ -87,32 +87,34 @@ export default async function Page(props: {
 
         <div className="flex gap-8 pt-2 md:pt-10 pb-10">
           <div className="sm:basis-3/12 sm:block hidden ">
-            <div className="">
-              {post.image_url && (
-                <Image
-                  src={post?.image_url}
-                  width={500}
-                  height={500}
-                  alt="Picture of the author"
-                />
-              )}
-            </div>
-
             <div className="sticky top-8 pt-4">
-              <h2>Tags</h2>
-              <div className="pt-2">
-                <p>
-                  {post?.posts_tags?.map((tag) => (
-                    <span key={tag?.tags?.id} className="mr-2">
-                      <Link
-                        href={`/blog?query=${tag?.tags?.title.toLowerCase()}`}
-                        className="hover:underline text-blue-400 text-lg"
-                      >
-                        #{tag?.tags?.title}
-                      </Link>
-                    </span>
-                  ))}
-                </p>
+              <div className="">
+                {post.image_url && (
+                  <Image
+                    src={post?.image_url}
+                    width={500}
+                    height={500}
+                    alt="Picture of the author"
+                  />
+                )}
+              </div>
+
+              <div className="">
+                <h2>Tags</h2>
+                <div className="pt-2">
+                  <p>
+                    {post?.posts_tags?.map((tag) => (
+                      <span key={tag?.tags?.id} className="mr-2">
+                        <Link
+                          href={`/blog?query=${tag?.tags?.title.toLowerCase()}`}
+                          className="hover:underline text-blue-400 text-lg"
+                        >
+                          #{tag?.tags?.title}
+                        </Link>
+                      </span>
+                    ))}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
