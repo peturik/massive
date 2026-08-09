@@ -25,7 +25,10 @@ export default async function Layout({
   }
 
   return (
-    <div className={`font-lusitana bg-gray-200 dark:bg-black`}>
+    <div
+      className={`font-lusitana bg-gray-200 dark:bg-black`}
+      suppressHydrationWarning
+    >
       <div className="flex  mx-auto h-screen flex-col md:flex-row md:overflow-hidden max-w-7xl">
         {" "}
         {/* max-w-6xl */}
