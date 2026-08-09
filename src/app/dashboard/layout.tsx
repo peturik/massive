@@ -25,17 +25,13 @@ export default async function Layout({
   }
 
   return (
-    <div
-      className={`font-lusitana bg-gray-200 dark:bg-black`}
-      suppressHydrationWarning
-    >
-      <div className="flex  mx-auto h-screen flex-col md:flex-row md:overflow-hidden max-w-7xl">
-        {" "}
+    <div className={`font-lusitana bg-gray-200 dark:bg-black`}>
+      <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
         {/* max-w-6xl */}
         <div className="w-full flex-none md:w-64 ">
           <SideNav />
         </div>
-        <div className="bg-white dark:bg-slate-800 dark:text-slate-300 grow px-6 md:overflow-y-auto md:px-12 md:pb-12 my-4 rounded-md">
+        <div className="bg-white dark:bg-slate-800 dark:text-slate-300 grow md:overflow-y-auto md:mr-2 mx-2 md:mx-auto px-2 md:px-12 md:pb-12 my-4 rounded-md">
           <TopMenu user={user?.email} />
           {children}
         </div>
