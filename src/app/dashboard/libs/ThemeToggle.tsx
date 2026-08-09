@@ -31,7 +31,7 @@ const ThemeToggle = () => {
   const toggleTheme = () => {
     setTheme(theme === "dark" || resolvedTheme === "dark" ? "light" : "dark");
     storeSetTheme(
-      theme === "dark" || resolvedTheme === "dark" ? "light" : "dark"
+      theme === "dark" || resolvedTheme === "dark" ? "light" : "dark",
     );
   };
 
